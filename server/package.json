@@ -1,0 +1,37 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Crating a DevConnect Project",
+  "main": "Server.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bppatkar/DevConnect.git"
+  },
+  "keywords": [
+    "MERN",
+    "REACT",
+    "NODE",
+    "JAVASCRIPT"
+  ],
+  "author": "Bhanu Pratap Patkar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Bppatkar/DevConnect/issues"
+  },
+  "homepage": "https://github.com/Bppatkar/DevConnect#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.16.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
