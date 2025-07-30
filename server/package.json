@@ -2,7 +2,8 @@
   "name": "server",
   "version": "1.0.0",
   "description": "Crating a DevConnect Project",
-  "main": "Server.js",
+  "main": "server.js",
+  "type": "module",
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js"
