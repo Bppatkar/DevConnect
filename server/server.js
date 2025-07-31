@@ -32,12 +32,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/projects', projectRoutes);
 
 // Health Check endpoint
-app.get('/api/health', (req, res) => {
-  res.status(200).json({
-    message: '🚀 DevConnect API Health Check... Working ✔✔✔🚀',
-    status: 'success',
-    timestamp: new Date().toISOString(),
-  });
+app.get('/api/test', (req, res) => {
+  res.json({ message: "Backend is working!" });
 });
 
 // Error handling middleware (MUST be last)
