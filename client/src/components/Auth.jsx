@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { authApi } from '../utils/api'; 
+import { authApi } from '../utils/api';
 
 function Auth({ onLogin }) {
-  const [isLogin, setIsLogin] = useState(true); 
+  const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
@@ -16,7 +16,7 @@ function Auth({ onLogin }) {
       ...formData,
       [e.target.name]: e.target.value,
     });
-    setError(''); 
+    setError('');
   };
 
   const handleSubmit = async (e) => {
@@ -37,14 +37,15 @@ function Auth({ onLogin }) {
 
       if (response.status === 200 || response.status === 201) {
         localStorage.setItem('token', response.data.token);
-        onLogin(response.data.user); // Pass user data up to App.jsx
+        onLogin(response.data.user);
       } else {
-        // Handle non-2xx responses
-        setError(response.data.message || 'Authentication failed. Please try again.');
+        setError(
+          response.data.message || 'Authentication failed. Please try again.'
+        );
       }
     } catch (err) {
-      // Handle network errors or errors from Axios
-      const errorMessage = err.response?.data?.message || 'Network error. Please try again.';
+      const errorMessage =
+        err.response?.data?.message || 'Network error. Please try again.';
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -52,7 +53,9 @@ function Auth({ onLogin }) {
   };
 
   return (
-    <div className="card p-8 max-w-md mx-auto bg-background-light">
+    <div className="card p-8 max-w-md mx-auto bg-background-DEFAULT">
+      {' '}
+      {/* Changed to bg-background-DEFAULT */}
       <div className="flex justify-center mb-8">
         <button
           className={`px-6 py-3 rounded-t-lg font-semibold text-lg transition-colors duration-200 ${
@@ -75,7 +78,6 @@ function Auth({ onLogin }) {
           Sign Up
         </button>
       </div>
-
       <div className="text-center mb-6">
         <h2 className="text-2xl font-semibold text-text-primary">
           {isLogin ? 'Welcome Back' : 'Join DevConnect'}
@@ -86,7 +88,6 @@ function Auth({ onLogin }) {
             : 'Create your developer profile'}
         </p>
       </div>
-
       <form onSubmit={handleSubmit} className="space-y-4">
         {!isLogin && (
           <div>
@@ -161,7 +162,6 @@ function Auth({ onLogin }) {
           {loading ? 'Please wait...' : isLogin ? 'Sign In' : 'Create Account'}
         </button>
       </form>
-
       <div className="text-center mt-6">
         <button
           onClick={() => setIsLogin(!isLogin)}

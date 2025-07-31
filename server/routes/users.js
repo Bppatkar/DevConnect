@@ -1,38 +1,23 @@
 import express from 'express';
 import {
-  getAllProjects,
-  getProject,
-  createProject,
-  updateProject,
-  deleteProject,
-  addComment,
-  toggleLike,
-  searchProjects,
-} from '../controllers/project.js';
+  getAllUsers,
+  getUser,
+  updateProfile,
+  searchUsers,
+  deleteAccount,
+} from '../controllers/user.js';
 import { auth } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// GET /api/projects - Get all projects
-// POST /api/projects - Create a new project
-router.route('/').get(getAllProjects).post(auth, createProject);
+router.route('/').get(auth, getAllUsers);
 
-// GET /api/projects/search - Search projects by query parameter 'q'
-router.route('/search').get(searchProjects);
+router.route('/:id').get(getUser);
 
-// GET /api/projects/:id - Get single project
-// PUT /api/projects/:id - Update project
-// DELETE /api/projects/:id - Delete project
-router
-  .route('/:id')
-  .get(getProject)
-  .put(auth, updateProject)
-  .delete(auth, deleteProject);
+router.route('/me').patch(auth, updateProfile);
 
-// POST /api/projects/:id/comments - Add a comment to a project
-router.route('/:id/comments').post(auth, addComment);
+router.route('/search').get(searchUsers);
 
-// POST /api/projects/:id/like - Toggle like on a project
-router.route('/:id/like').post(auth, toggleLike);
+router.route('/account').delete(auth, deleteAccount);
 
 export default router;

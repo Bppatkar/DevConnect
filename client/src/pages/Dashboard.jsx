@@ -27,22 +27,28 @@ function Dashboard({ user }) {
         return;
       }
       try {
-        const projectSearchResults = await projectApi.searchProjects(searchQuery);
+        const projectSearchResults = await projectApi.searchProjects(
+          searchQuery
+        );
         const userSearchResults = await userApi.searchUsers(searchQuery);
 
         const uniqueProjects = new Map();
 
-        projectSearchResults.data.forEach(p => uniqueProjects.set(p._id, p));
+        projectSearchResults.data.projects.forEach((p) =>
+          uniqueProjects.set(p._id, p)
+        ); // Access .projects
 
-        for (const foundUser of userSearchResults.data) {
-          projects.filter(p => p.owner._id === foundUser._id).forEach(p => uniqueProjects.set(p._id, p));
+        for (const foundUser of userSearchResults.data.users) {
+          // Access .users
+          projects
+            .filter((p) => p.owner._id === foundUser._id)
+            .forEach((p) => uniqueProjects.set(p._id, p));
         }
 
         setFilteredProjects(Array.from(uniqueProjects.values()));
-
       } catch (err) {
-        console.error("Error during search:", err);
-        setError("Failed to perform search.");
+        console.error('Error during search:', err);
+        setError('Failed to perform search.');
         setFilteredProjects([]);
       }
     };
@@ -55,8 +61,9 @@ function Dashboard({ user }) {
     setError('');
     try {
       const response = await projectApi.getAllProjects();
-      setProjects(response.data);
-      setFilteredProjects(response.data);
+      // FIX HERE: Access response.data.projects
+      setProjects(response.data.projects);
+      setFilteredProjects(response.data.projects);
     } catch (err) {
       setError('Failed to fetch projects. Please try again later.');
       console.error('Error fetching projects:', err);
@@ -74,7 +81,7 @@ function Dashboard({ user }) {
     setSearchQuery(query);
   };
 
-  const openProfileModal = (userId = user._id) => {
+  const openProfileModal = (userId) => {
     setProfileIdToView(userId);
     setShowProfileModal(true);
   };
@@ -92,7 +99,7 @@ function Dashboard({ user }) {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>
           <h1 className="text-4xl font-bold text-text-primary mb-2">
-            Welcome back, {user.username}!
+            Welcome back, {user?.username}!
           </h1>
           <p className="text-text-secondary text-lg">
             Discover amazing projects and share your own work.
@@ -100,7 +107,7 @@ function Dashboard({ user }) {
         </div>
         <div className="flex gap-3 mt-4 md:mt-0">
           <button
-            onClick={() => openProfileModal(user._id)}
+            onClick={() => openProfileModal(user?._id)}
             className="btn bg-light-background text-text-primary hover:bg-gray-300"
           >
             <FiUser /> View Profile
@@ -126,7 +133,7 @@ function Dashboard({ user }) {
 
       {filteredProjects.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProjects.map(project => (
+          {filteredProjects.map((project) => (
             <ProjectCard
               key={project._id}
               project={project}
@@ -139,8 +146,12 @@ function Dashboard({ user }) {
           <div className="text-text-light mb-4">
             <FiSearch className="w-16 h-16 mx-auto" />
           </div>
-          <h3 className="text-xl font-medium text-text-primary mb-2">No projects found</h3>
-          <p className="text-text-secondary">Try adjusting your search or be the first to add a project!</p>
+          <h3 className="text-xl font-medium text-text-primary mb-2">
+            No projects found
+          </h3>
+          <p className="text-text-secondary">
+            Try adjusting your search or be the first to add a project!
+          </p>
         </div>
       )}
 
@@ -163,4 +174,3 @@ function Dashboard({ user }) {
 }
 
 export default Dashboard;
-

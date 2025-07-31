@@ -1,9 +1,8 @@
-// client/src/pages/ProjectView.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { projectApi } from '../utils/api'; // Import projectApi functions
-import { FiHeart, FiMessageSquare, FiGithub, FiExternalLink, FiUser } from 'react-icons/fi'; // Icons
-import Profile from '../components/Profile'; // Import Profile component for modal
+import { projectApi } from '../utils/api';
+import { FiHeart, FiMessageSquare, FiGithub, FiExternalLink, FiUser } from 'react-icons/fi';
+import Profile from '../components/Profile';
 
 function ProjectView({ user }) {
   const { id } = useParams();
@@ -20,9 +19,10 @@ function ProjectView({ user }) {
     setError('');
     try {
       const response = await projectApi.getProjectById(id);
-      setProject(response.data);
+      setProject(response.data.project); // Access .project property
     } catch (err) {
       setError(err.response?.data?.message || 'Error fetching project details.');
+      console.error('Error fetching project:', err);
     } finally {
       setLoading(false);
     }
@@ -30,7 +30,7 @@ function ProjectView({ user }) {
 
   useEffect(() => {
     fetchProjectDetails();
-  }, [id]); // Re-fetch if project ID changes
+  }, [id]);
 
   const handleAddComment = async (e) => {
     e.preventDefault();
@@ -43,13 +43,16 @@ function ProjectView({ user }) {
 
     try {
       const response = await projectApi.addComment(id, { text: newCommentText });
-      // Assuming backend returns updated project or just the new comment
-      // If it returns the new comment, you'll need to append it and populate user info
-      // For now, let's re-fetch the whole project to get updated comments with user data
-      await fetchProjectDetails();
+      // Assuming backend returns updated project or just the new comments
+      // If it returns the new comments, you'll need to update the project state
+      setProject(prevProject => ({
+        ...prevProject,
+        comments: response.data.comments // Update comments with the new populated array
+      }));
       setNewCommentText('');
     } catch (err) {
       setError(err.response?.data?.message || 'Error adding comment.');
+      console.error('Error adding comment:', err);
     } finally {
       setCommentLoading(false);
     }
@@ -59,10 +62,10 @@ function ProjectView({ user }) {
     setError('');
     try {
       const response = await projectApi.toggleLike(id);
-      // Assuming backend returns updated project with likes
-      setProject(response.data);
+      setProject(response.data.project); // Update project with new likes data
     } catch (err) {
       setError(err.response?.data?.message || 'Error toggling like.');
+      console.error('Error toggling like:', err);
     }
   };
 
@@ -109,7 +112,7 @@ function ProjectView({ user }) {
               onClick={() => openProfileModal(project.owner._id)}
               className="text-primary hover:text-primary-dark text-lg font-medium flex items-center gap-2"
             >
-              <FiUser className="w-5 h-5" /> {project.owner.username}
+              <FiUser className="w-5 h-5" /> {project.owner?.username} {/* Defensive check here */}
             </button>
           </div>
           <div className="flex items-center gap-4 mt-4 md:mt-0">
@@ -177,6 +180,12 @@ function ProjectView({ user }) {
         <div className="mt-8 border-t pt-8 border-light-background">
           <h2 className="text-2xl font-semibold text-text-primary mb-4">Comments</h2>
 
+          {error && (
+            <div className="text-danger text-sm bg-danger/10 p-3 rounded-lg border border-danger mb-4">
+              {error}
+            </div>
+          )}
+
           {/* Add Comment Form */}
           <form onSubmit={handleAddComment} className="mb-6 flex gap-2">
             <input
@@ -204,12 +213,17 @@ function ProjectView({ user }) {
                   <p className="text-text-primary text-base mb-1">{comment.text}</p>
                   <p className="text-text-secondary text-xs">
                     by{' '}
-                    <button
-                      onClick={() => openProfileModal(comment.user._id)}
-                      className="text-primary hover:text-primary-dark font-medium"
-                    >
-                      {comment.user.username}
-                    </button>{' '}
+                    {/* Defensive check for comment.user */}
+                    {comment.user ? (
+                      <button
+                        onClick={() => openProfileModal(comment.user._id)}
+                        className="text-primary hover:text-primary-dark font-medium"
+                      >
+                        {comment.user.username} {/* Line 112 is here */}
+                      </button>
+                    ) : (
+                      <span className="text-text-light">Unknown User</span>
+                    )}{' '}
                     on {new Date(comment.createdAt).toLocaleDateString()}
                   </p>
                 </div>
@@ -234,4 +248,3 @@ function ProjectView({ user }) {
 }
 
 export default ProjectView;
-

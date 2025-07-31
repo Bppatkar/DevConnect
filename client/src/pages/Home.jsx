@@ -1,28 +1,29 @@
-
-import React from 'react';
-import Auth from '../components/Auth'; 
+import React from "react";
+import Auth from "../components/Auth";
 
 function Home({ onLogin }) {
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-primary to-accent-teal p-4">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-6xl font-extrabold text-text-white mb-6 leading-tight">
+    <div className="from-primary to-accent-teal flex min-h-screen flex-col items-center justify-center bg-gradient-to-br p-4">
+      <div className="container mx-auto max-w-6xl px-4 py-8">
+        <div className="mb-16 text-center">
+          <h1 className="text-text-white mb-6 text-5xl leading-tight font-extrabold md:text-6xl">
             Showcase Your <br />
-            <span className="text-light-background block mt-2">Developer Projects</span>
+            <span className="text-light-background mt-2 block">
+              Developer Projects
+            </span>
           </h1>
-          <p className="text-xl md:text-2xl text-light-background max-w-2xl mx-auto mb-8 opacity-90">
-            Connect with developers, share your work, and get valuable
-            feedback from the community.
+          <p className="text-light-background mx-auto mb-8 max-w-2xl text-xl opacity-90 md:text-2xl">
+            Connect with developers, share your work, and get valuable feedback
+            from the community.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
+        <div className="mb-16 grid gap-8 md:grid-cols-3">
           {/* Feature Card 1 */}
-          <div className="bg-dark-secondary rounded-xl p-8 shadow-lg text-center flex flex-col items-center">
-            <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
+          <div className="bg-dark-secondary flex flex-col items-center rounded-xl p-8 text-center shadow-lg">
+            <div className="bg-primary mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full shadow-md">
               <svg
-                className="w-8 h-8 text-text-white"
+                className="text-text-white h-8 w-8"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -31,23 +32,23 @@ function Home({ onLogin }) {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
                 />
               </svg>
             </div>
-            <h3 className="text-2xl font-semibold mb-2 text-text-white">
+            <h3 className="text-text-white mb-2 text-2xl font-semibold">
               Showcase Projects
             </h3>
-            <p className="text-lg text-light-background opacity-80">
+            <p className="text-light-background text-lg opacity-80">
               Display your best work with descriptions, links, and tech stacks.
             </p>
           </div>
 
           {/* Feature Card 2 */}
-          <div className="bg-dark-secondary rounded-xl p-8 shadow-lg text-center flex flex-col items-center">
-            <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
+          <div className="bg-dark-secondary flex flex-col items-center rounded-xl p-8 text-center shadow-lg">
+            <div className="bg-primary mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full shadow-md">
               <svg
-                className="w-8 h-8 text-text-white"
+                className="text-text-white h-8 w-8"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -60,20 +61,20 @@ function Home({ onLogin }) {
                 />
               </svg>
             </div>
-            <h3 className="text-2xl font-semibold mb-2 text-text-white">
+            <h3 className="text-text-white mb-2 text-2xl font-semibold">
               Get Feedback
             </h3>
-            <p className="text-lg text-light-background opacity-80">
+            <p className="text-light-background text-lg opacity-80">
               Receive constructive comments and suggestions from other
               developers.
             </p>
           </div>
 
           {/* Feature Card 3 */}
-          <div className="bg-dark-secondary rounded-xl p-8 shadow-lg text-center flex flex-col items-center">
-            <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
+          <div className="bg-dark-secondary flex flex-col items-center rounded-xl p-8 text-center shadow-lg">
+            <div className="bg-primary mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full shadow-md">
               <svg
-                className="w-8 h-8 text-text-white"
+                className="text-text-white h-8 w-8"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -86,17 +87,16 @@ function Home({ onLogin }) {
                 />
               </svg>
             </div>
-            <h3 className="text-2xl font-semibold mb-2 text-text-white">
+            <h3 className="text-text-white mb-2 text-2xl font-semibold">
               Discover & Connect
             </h3>
-            <p className="text-lg text-light-background opacity-80">
-              Find inspiring projects and connect with like-minded
-              developers.
+            <p className="text-light-background text-lg opacity-80">
+              Find inspiring projects and connect with like-minded developers.
             </p>
           </div>
         </div>
 
-        <div className="max-w-md mx-auto">
+        <div className="mx-auto max-w-md">
           <Auth onLogin={onLogin} />
         </div>
       </div>

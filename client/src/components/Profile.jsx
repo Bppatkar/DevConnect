@@ -1,61 +1,72 @@
-// client/src/components/Profile.jsx
 import React, { useState, useEffect } from 'react';
-import { FiEdit, FiSave, FiX, FiUser } from 'react-icons/fi'; // Importing icons
-import { userApi, projectApi } from '../utils/api'; // Import API functions
-import ProjectCard from './ProjectCard'; // To display user's projects
+import { FiEdit, FiSave, FiX, FiUser } from 'react-icons/fi';
+import { userApi, projectApi } from '../utils/api';
+import ProjectCard from './ProjectCard';
 
 function Profile({ user, onClose, profileIdToView }) {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [profileData, setProfileData] = useState(null); // Data for the profile being viewed
-  const [formData, setFormData] = useState({ // Data for editing
+  const [profileData, setProfileData] = useState(null);
+  const [formData, setFormData] = useState({
     username: '',
     email: '',
-    bio: ''
+    bio: '',
   });
   const [userProjects, setUserProjects] = useState([]);
 
-  // Determine if the profile being viewed is the current logged-in user's profile
-  const isCurrentUserProfile = profileIdToView === user._id;
+  // isCurrentUserProfile should use the user prop directly
+  const isCurrentUserProfile = user && profileIdToView === user._id;
 
   useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true);
       setError('');
+
+      // Ensure user._id is available if profileIdToView is not explicitly set
+      const userIdToFetch = profileIdToView || (user ? user._id : null); // <-- More robust check
+
+      if (!userIdToFetch) {
+        setError('User ID not provided to fetch profile.');
+        setLoading(false);
+        return;
+      }
+
       try {
-        const userIdToFetch = profileIdToView || user._id; // Default to current user if no specific ID is passed
         const response = await userApi.getProfile(userIdToFetch);
-        setProfileData(response.data);
+        setProfileData(response.data.user);
         setFormData({
-          username: response.data.username,
-          email: response.data.email,
-          bio: response.data.bio || ''
+          username: response.data.user.username,
+          email: response.data.user.email,
+          bio: response.data.user.bio || '',
         });
 
         // Fetch projects for this user
-        // Note: Backend needs a route to get projects by user ID, or we filter from all projects.
-        // For now, let's assume projectApi.searchProjects can filter by owner username.
-        // A dedicated endpoint like /api/users/:userId/projects would be more efficient.
-        const projectsResponse = await projectApi.searchProjects(response.data.username);
-        setUserProjects(projectsResponse.data.filter(p => p.owner._id === userIdToFetch));
-
+        const projectsResponse = await projectApi.searchProjects(
+          response.data.user.username
+        );
+        setUserProjects(
+          projectsResponse.data.projects.filter(
+            (p) => p.owner._id === userIdToFetch
+          )
+        );
       } catch (err) {
-        const errorMessage = err.response?.data?.message || 'Failed to fetch profile.';
+        const errorMessage =
+          err.response?.data?.message || 'Failed to fetch profile.';
         setError(errorMessage);
-        setProfileData(null); // Clear profile data on error
+        setProfileData(null);
       } finally {
         setLoading(false);
       }
     };
 
     fetchProfile();
-  }, [user, profileIdToView]); // Re-fetch if current user or the ID of the profile to view changes
+  }, [user, profileIdToView]);
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
     setError('');
   };
@@ -82,7 +93,8 @@ function Profile({ user, onClose, profileIdToView }) {
         setError(response.data.message || 'Failed to update profile');
       }
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Network error. Please try again.';
+      const errorMessage =
+        err.response?.data?.message || 'Network error. Please try again.';
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -118,7 +130,9 @@ function Profile({ user, onClose, profileIdToView }) {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-text-primary">
-          {isCurrentUserProfile ? 'My Profile' : `${profileData.username}'s Profile`}
+          {isCurrentUserProfile
+            ? 'My Profile'
+            : `${profileData.username}'s Profile`}
         </h2>
         {onClose && ( // Show close button only if in a modal
           <button
@@ -139,7 +153,10 @@ function Profile({ user, onClose, profileIdToView }) {
       {isEditing ? (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-text-primary mb-2">
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-text-primary mb-2"
+            >
               Username
             </label>
             <input
@@ -153,7 +170,10 @@ function Profile({ user, onClose, profileIdToView }) {
             />
           </div>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-text-primary mb-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-text-primary mb-2"
+            >
               Email
             </label>
             <input
@@ -167,7 +187,10 @@ function Profile({ user, onClose, profileIdToView }) {
             />
           </div>
           <div>
-            <label htmlFor="bio" className="block text-sm font-medium text-text-primary mb-2">
+            <label
+              htmlFor="bio"
+              className="block text-sm font-medium text-text-primary mb-2"
+            >
               Bio
             </label>
             <textarea
@@ -193,7 +216,13 @@ function Profile({ user, onClose, profileIdToView }) {
               disabled={loading}
               className="btn btn-primary flex-1"
             >
-              {loading ? 'Saving...' : <><FiSave /> Save Changes</>}
+              {loading ? (
+                'Saving...'
+              ) : (
+                <>
+                  <FiSave /> Save Changes
+                </>
+              )}
             </button>
           </div>
         </form>
@@ -204,13 +233,17 @@ function Profile({ user, onClose, profileIdToView }) {
               <FiUser /> {/* Placeholder for profile picture */}
             </div>
             <div>
-              <p className="text-3xl font-bold text-text-primary">{profileData.username}</p>
+              <p className="text-3xl font-bold text-text-primary">
+                {profileData.username}
+              </p>
               <p className="text-lg text-text-secondary">{profileData.email}</p>
             </div>
           </div>
 
           <div className="bg-light-background p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-text-primary mb-2">About Me</h3>
+            <h3 className="text-lg font-semibold text-text-primary mb-2">
+              About Me
+            </h3>
             <p className="text-text-secondary text-base whitespace-pre-wrap">
               {profileData.bio || 'No bio provided yet.'}
             </p>
@@ -229,17 +262,21 @@ function Profile({ user, onClose, profileIdToView }) {
 
           <div className="pt-6">
             <h3 className="text-2xl font-bold text-text-primary mb-4">
-              {isCurrentUserProfile ? 'My Projects' : `${profileData.username}'s Projects`}
+              {isCurrentUserProfile
+                ? 'My Projects'
+                : `${profileData.username}'s Projects`}
             </h3>
             {userProjects.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {userProjects.map(project => (
+                {userProjects.map((project) => (
                   <ProjectCard key={project._id} project={project} />
                 ))}
               </div>
             ) : (
               <p className="text-text-secondary">
-                {isCurrentUserProfile ? 'You have not added any projects yet.' : 'This user has no projects yet.'}
+                {isCurrentUserProfile
+                  ? 'You have not added any projects yet.'
+                  : 'This user has no projects yet.'}
               </p>
             )}
           </div>
@@ -257,9 +294,7 @@ function Profile({ user, onClose, profileIdToView }) {
     </div>
   ) : (
     <div className="container mx-auto px-4 py-8">
-      <div className="card bg-background-DEFAULT">
-        {ProfileContent}
-      </div>
+      <div className="card bg-background-DEFAULT">{ProfileContent}</div>
     </div>
   );
 }

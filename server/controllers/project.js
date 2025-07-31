@@ -79,7 +79,7 @@ export const createProject = async (req, res, next) => {
   }
 };
 
-router.put('/:id', auth, async (req, res, next) => {
+export const updateProject = async (req, res, next) => {
   try {
     let project = await Project.findById(req.params.id);
 
@@ -124,7 +124,7 @@ router.put('/:id', auth, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-});
+};
 
 export const deleteProject = async (req, res, next) => {
   try {

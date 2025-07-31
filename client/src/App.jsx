@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import {
   BrowserRouter as Router,
@@ -22,7 +23,7 @@ function App() {
         try {
           const response = await authApi.getMe();
           if (response.status === 200) {
-            setUser(response.data);
+            setUser(response.data.user);
           } else {
             localStorage.removeItem('token');
             setUser(null);
@@ -50,15 +51,15 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background-DEFAULT">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-primary"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-cyan-500"></div>
       </div>
     );
   }
 
   return (
     <Router>
-      <div className="min-h-screen flex flex-col bg-background-DEFAULT text-text-primary">
+      <div className="min-h-screen flex flex-col bg-gray-100 text-gray-900">
         {user && <Navbar user={user} onLogout={logout} />}
 
         <main className="flex-grow">
@@ -90,4 +91,3 @@ function App() {
 }
 
 export default App;
-
