@@ -75,7 +75,7 @@ function Profile({ user, onClose, profileIdToView }) {
       const response = await userApi.updateProfile(formData);
 
       if (response.status === 200) {
-        setProfileData(response.data.user); // Assuming backend returns { success: true, user: ... }
+        setProfileData(response.data.user);
         setIsEditing(false);
       } else {
         setError(response.data.message || "Failed to update profile");

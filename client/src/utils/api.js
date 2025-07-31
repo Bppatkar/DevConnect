@@ -7,12 +7,14 @@ const api = axios.create({
   },
 });
 
-const setAuthHeader = (token) => ({
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  },
-});
+const setAuthHeader = (token) => {
+  return {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
+};
 
 export const authApi = {
   signup: (userData) => api.post("/auth/signup", userData),
@@ -24,9 +26,16 @@ export const authApi = {
   },
 };
 
+// --- Project API Calls ---
 export const projectApi = {
-  getAllProjects: async () => api.get("/projects"),
-  getProjectById: async (id) => api.get(`/projects/${id}`),
+  getAllProjects: async () => {
+    // Projects list is public, no token needed
+    return api.get("/projects");
+  },
+  getProjectById: async (id) => {
+    // Project details are public
+    return api.get(`/projects/${id}`);
+  },
   createProject: async (projectData) => {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("Authentication required to create project");
@@ -44,9 +53,13 @@ export const projectApi = {
   toggleLike: async (projectId) => {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("Authentication required to like project");
+    // Assuming backend handles likes on this endpoint, e.g., POST /api/projects/:id/like
     return api.post(`/projects/${projectId}/like`, {}, setAuthHeader(token));
   },
-  searchProjects: async (query) => api.get(`/projects/search?q=${query}`),
+  searchProjects: async (query) => {
+    // Project search is public, no token needed
+    return api.get(`/projects/search?q=${query}`);
+  },
   deleteProject: async (projectId) => {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("Authentication required to delete project");
@@ -54,21 +67,23 @@ export const projectApi = {
   },
 };
 
+// --- User API Calls ---
 export const userApi = {
   searchUsers: async (query) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token"); // User search requires authentication
     if (!token) throw new Error("Authentication required to search users");
     return api.get(`/users/search?q=${query}`, setAuthHeader(token));
   },
   getProfile: async (userId) => {
+    // Profile view can be public, but if it's the current user, token might be needed for full data
     const token = localStorage.getItem("token");
     return api.get(`/users/${userId}`, token ? setAuthHeader(token) : {});
   },
   updateProfile: async (profileData) => {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("Authentication required to update profile");
-    return api.patch("/users/me", profileData, setAuthHeader(token));
+    return api.patch("/users/me", profileData, setAuthHeader(token)); // Assuming PATCH /api/users/me route
   },
 };
 
-export default api;
+export default api; 

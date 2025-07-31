@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { projectApi } from "../utils/api";
 import {
   FiHeart,
@@ -7,11 +7,13 @@ import {
   FiGithub,
   FiExternalLink,
   FiUser,
+  FiArrowLeft,
 } from "react-icons/fi";
 import Profile from "../components/Profile";
 
 function ProjectView({ user }) {
   const { id } = useParams();
+  const navigate = useNavigate(); // Initialize useNavigate
   const [project, setProject] = useState(null);
   const [newCommentText, setNewCommentText] = useState("");
   const [loading, setLoading] = useState(true);
@@ -109,24 +111,35 @@ function ProjectView({ user }) {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="rounded-lg bg-white p-8 shadow-md">
-        {/* Project Header */}
+        {/* Project Header with Back Button */}
         <div className="mb-6 flex flex-col items-start justify-between border-b pb-4 md:flex-row md:items-center">
-          <div className="flex-1">
-            <h1 className="mb-2 text-4xl font-bold text-gray-900">
-              {project.title}
-            </h1>
+          <div className="mb-4 flex items-center gap-4 md:mb-0">
+            {" "}
+            {/* Adjusted for flex and spacing */}
             <button
-              onClick={() => openProfileModal(project.owner._id)}
-              className="flex items-center gap-2 text-lg font-medium text-blue-600 hover:text-blue-800"
+              onClick={() => navigate(-1)} // Navigates back one step in history
+              className="flex items-center gap-2 font-medium text-amber-600 transition-colors hover:text-amber-800"
+              title="Go back"
             >
-              <FiUser className="h-5 w-5" /> {project.owner?.username}
+              <FiArrowLeft className="h-6 w-6" />
             </button>
+            <div className="flex-1">
+              <h1 className="mb-2 text-4xl font-bold text-gray-900">
+                {project.title}
+              </h1>
+              <button
+                onClick={() => openProfileModal(project.owner._id)}
+                className="flex items-center gap-2 text-lg font-medium text-blue-600 hover:text-blue-800"
+              >
+                <FiUser className="h-5 w-5" /> {project.owner?.username}
+              </button>
+            </div>
           </div>
           <div className="mt-4 flex items-center gap-4 md:mt-0">
             <button
               onClick={handleToggleLike}
               className={`flex items-center gap-2 rounded-full px-4 py-2 font-semibold transition-colors ${
-                project.likes && project.likes.includes(user._id)
+                project.likes && user && project.likes.includes(user._id) // Ensure user is defined
                   ? "bg-red-500 text-white hover:bg-red-700"
                   : "bg-gray-200 text-gray-600 hover:bg-gray-300"
               }`}

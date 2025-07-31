@@ -50,7 +50,7 @@ function App() {
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex h-screen items-center justify-center bg-gray-50">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
       </div>
     );
@@ -58,12 +58,11 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50 text-gray-900">
+      <div className="min-h-screen bg-gray-100 text-gray-900 font-sans">
         {user && (
           <Navbar
             user={user}
             onLogout={logout}
-            className="bg-white shadow-md"
           />
         )}
         <main className="container mx-auto px-4 py-6">
