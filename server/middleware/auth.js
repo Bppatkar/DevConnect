@@ -6,7 +6,6 @@ export const auth = async (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
 
     if (!token) {
-      // Use next(error) to pass to the global errorHandler
       return next({
         message: 'No token provided, authorization denied',
         statusCode: 401,

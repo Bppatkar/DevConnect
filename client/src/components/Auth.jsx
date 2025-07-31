@@ -53,7 +53,8 @@ function Auth({ onLogin }) {
   };
 
   return (
-    <div className="mx-auto max-w-md rounded-lg bg-white p-6 shadow-md">
+    <div className="mx-auto max-w-md rounded-lg bg-white/80 p-6"> {/* Changed bg-white to bg-white/80 and removed shadow-md */}
+      {/* Toggle Buttons */}
       <div className="mb-8 flex justify-center">
         <button
           className={`rounded-t-lg px-6 py-3 text-lg font-semibold transition-colors ${
@@ -72,6 +73,8 @@ function Auth({ onLogin }) {
           Sign Up
         </button>
       </div>
+
+      {/* Header */}
       <div className="mb-6 text-center">
         <h2 className="text-2xl font-semibold text-gray-900">
           {isLogin ? "Welcome Back" : "Join DevConnect"}
@@ -82,6 +85,8 @@ function Auth({ onLogin }) {
             : "Create your developer profile"}
         </p>
       </div>
+
+      {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         {!isLogin && (
           <div>
@@ -97,7 +102,7 @@ function Auth({ onLogin }) {
               name="username"
               value={formData.username}
               onChange={handleChange}
-              className="w-full rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               placeholder="Enter your username"
               required={!isLogin}
             />
@@ -117,7 +122,7 @@ function Auth({ onLogin }) {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             placeholder="Enter your email"
             required
           />
@@ -127,7 +132,7 @@ function Auth({ onLogin }) {
           <label
             htmlFor="password"
             className="mb-2 block text-sm font-medium text-gray-900"
-          >
+            >
             Password
           </label>
           <input
@@ -136,7 +141,7 @@ function Auth({ onLogin }) {
             name="password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             placeholder="Enter your password"
             required
           />
@@ -156,6 +161,8 @@ function Auth({ onLogin }) {
           {loading ? "Please wait..." : isLogin ? "Sign In" : "Create Account"}
         </button>
       </form>
+
+      {/* Footer */}
       <div className="mt-6 text-center">
         <button
           onClick={() => setIsLogin(!isLogin)}

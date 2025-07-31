@@ -3,7 +3,7 @@ import Auth from "../components/Auth";
 
 function Home({ onLogin }) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-blue-500 to-teal-400 p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-blue-500 to-teal-400">
       <div className="container mx-auto max-w-6xl px-4 py-8">
         {/* Header Section */}
         <div className="mb-16 text-center">

@@ -62,6 +62,7 @@ export const createProject = async (req, res, next) => {
     await project.populate('owner', 'username email');
     await project.populate('comments.user', 'username');
 
+    // Add project to user's projects array
     await User.findByIdAndUpdate(
       req.user._id,
       {
@@ -87,6 +88,7 @@ export const updateProject = async (req, res, next) => {
       return next({ message: 'Project not found', statusCode: 404 });
     }
 
+    // Authorization: Ensure the user is the owner of the project
     if (project.owner.toString() !== req.user._id.toString()) {
       return next({
         message: 'Not authorized to update this project',
@@ -94,6 +96,7 @@ export const updateProject = async (req, res, next) => {
       });
     }
 
+    // Sanitize links and technologies if provided
     if (req.body.links !== undefined) {
       req.body.links = Array.isArray(req.body.links)
         ? req.body.links.filter(
@@ -134,6 +137,7 @@ export const deleteProject = async (req, res, next) => {
       return next({ message: 'Project not found', statusCode: 404 });
     }
 
+    // Authorization: Ensure the user is the owner of the project
     if (project.owner.toString() !== req.user._id.toString()) {
       return next({
         message: 'Not authorized to delete this project',
@@ -143,6 +147,7 @@ export const deleteProject = async (req, res, next) => {
 
     await Project.findByIdAndDelete(req.params.id);
 
+    // Remove project from the user's projects array
     await User.findByIdAndUpdate(req.user._id, {
       $pull: { projects: req.params.id },
     });
@@ -178,11 +183,12 @@ export const addComment = async (req, res, next) => {
     project.comments.push(comment);
     await project.save();
 
+    // Populate the user for the newly added comment for immediate response
     await project.populate('comments.user', 'username');
 
     res.status(201).json({
       success: true,
-      comments: project.comments,
+      comments: project.comments, // Return the updated comments array
     });
   } catch (error) {
     next(error);
@@ -203,22 +209,25 @@ export const toggleLike = async (req, res, next) => {
 
     let likedStatus;
     if (likeIndex > -1) {
+      // User already liked, so unlike
       project.likes.splice(likeIndex, 1);
       likedStatus = false;
     } else {
+      // User has not liked, so like
       project.likes.push(userId);
       likedStatus = true;
     }
 
     await project.save();
 
+    // Re-fetch the project to get updated populated data for the response
     const updatedProject = await Project.findById(req.params.id)
       .populate('owner', 'username email')
       .populate('comments.user', 'username');
 
     res.json({
       success: true,
-      project: updatedProject,
+      project: updatedProject, // Return the updated project object
       liked: likedStatus,
       message: likedStatus ? 'Project liked' : 'Project unliked',
     });
@@ -240,11 +249,11 @@ export const searchProjects = async (req, res, next) => {
       $or: [
         { title: { $regex: searchRegex } },
         { description: { $regex: searchRegex } },
-        { technologies: { $in: [searchRegex] } },
+        { technologies: { $in: [searchRegex] } }, // Search within the technologies array
       ],
     })
       .populate('owner', 'username email')
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 }); // Sort by most recent
 
     res.json({
       success: true,

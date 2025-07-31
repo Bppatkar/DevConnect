@@ -1,4 +1,3 @@
-// client/src/components/SearchBar.jsx
 import React, { useState } from "react";
 import { FiSearch } from "react-icons/fi";
 
@@ -13,8 +12,6 @@ function SearchBar({ onSearch }) {
   const handleChange = (e) => {
     const value = e.target.value;
     setQuery(value);
-    // Optional: Real-time search by uncommenting the line below
-    // onSearch(value);
   };
 
   return (

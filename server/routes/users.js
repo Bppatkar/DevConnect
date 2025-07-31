@@ -16,7 +16,7 @@ router.route('/:id').get(getUser);
 
 router.route('/me').patch(auth, updateProfile);
 
-router.route('/search').get(searchUsers);
+router.route('/search').get(auth, searchUsers); 
 
 router.route('/account').delete(auth, deleteAccount);
 

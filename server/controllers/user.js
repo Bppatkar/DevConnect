@@ -89,8 +89,10 @@ export const deleteAccount = async (req, res, next) => {
   try {
     const userId = req.user._id;
 
+    // Delete all projects owned by the user
     await Project.deleteMany({ owner: userId });
 
+    // Delete the user account
     await User.findByIdAndDelete(userId);
 
     res.json({ success: true, message: 'Account and associated projects deleted successfully' });
@@ -98,4 +100,3 @@ export const deleteAccount = async (req, res, next) => {
     next(error);
   }
 };
-

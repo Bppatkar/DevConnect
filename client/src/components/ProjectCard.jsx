@@ -2,9 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { FiHeart, FiMessageSquare, FiTrash } from "react-icons/fi";
 
-function ProjectCard({ project, onViewProfile, onDelete }) {
+function ProjectCard({ project, onViewProfile, onDelete, currentUser }) {
   const { _id, title, description, technologies, owner, likes, comments } =
     project;
+
+  const isOwner = currentUser && owner && currentUser._id === owner._id;
 
   return (
     <div className="flex h-full flex-col rounded-lg border border-gray-200 bg-white p-6 shadow-md">
@@ -15,19 +17,21 @@ function ProjectCard({ project, onViewProfile, onDelete }) {
             {title}
           </h3>
           <button
-            onClick={() => onViewProfile(owner._id)} // Pass owner ID to the callback
+            onClick={() => onViewProfile(owner?._id)} // Use optional chaining to avoid errors
             className="text-sm font-medium text-gray-600 transition-colors hover:text-blue-600"
           >
-            by {owner.username}
+            by {owner?.username || "Unknown"}
           </button>
         </div>
-        <button
-          onClick={() => onDelete(_id)} // Pass project ID to the callback
-          className="text-red-600 transition-colors hover:text-red-800"
-          title="Delete Project"
-        >
-          <FiTrash className="h-5 w-5" />
-        </button>
+        {isOwner && (
+          <button
+            onClick={() => onDelete(_id)} // Pass project ID to the callback
+            className="text-red-600 transition-colors hover:text-red-800"
+            title="Delete Project"
+          >
+            <FiTrash className="h-5 w-5" />
+          </button>
+        )}
       </div>
 
       {/* Description */}

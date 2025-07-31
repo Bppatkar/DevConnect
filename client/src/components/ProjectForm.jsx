@@ -1,4 +1,3 @@
-// client/src/components/ProjectForm.jsx
 import React, { useState } from "react";
 import { FiX, FiPlusCircle } from "react-icons/fi";
 import { projectApi } from "../utils/api";
@@ -59,7 +58,7 @@ function ProjectForm({ onClose, onProjectAdded }) {
 
       if (response.status === 200 || response.status === 201) {
         // Assuming 200 or 201 for success
-        onProjectAdded(response.data); // Pass the created project data
+        onProjectAdded(response.data.project); // Pass the created project data, assuming backend returns { success: true, project: ... }
       } else {
         setError(response.data.message || "Failed to create project");
       }

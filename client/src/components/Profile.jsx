@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { FiEdit, FiSave, FiX, FiUser } from "react-icons/fi";
+import { useState, useEffect } from "react";
+import { FiX, FiUser } from "react-icons/fi";
 import { userApi, projectApi } from "../utils/api";
 import ProjectCard from "./ProjectCard.jsx";
 
@@ -39,14 +39,12 @@ function Profile({ user, onClose, profileIdToView }) {
           bio: response.data.user.bio || "",
         });
 
-        const projectsResponse = await projectApi.searchProjects(
-          response.data.user.username,
+        // Fetch projects owned by this user
+        const projectsResponse = await projectApi.getAllProjects(); // Fetch all projects
+        const filteredUserProjects = projectsResponse.data.projects.filter(
+          (p) => p.owner._id === userIdToFetch,
         );
-        setUserProjects(
-          projectsResponse.data.projects.filter(
-            (p) => p.owner._id === userIdToFetch,
-          ),
-        );
+        setUserProjects(filteredUserProjects);
       } catch (err) {
         const errorMessage =
           err.response?.data?.message || "Failed to fetch profile.";
@@ -77,7 +75,7 @@ function Profile({ user, onClose, profileIdToView }) {
       const response = await userApi.updateProfile(formData);
 
       if (response.status === 200) {
-        setProfileData(response.data);
+        setProfileData(response.data.user); // Assuming backend returns { success: true, user: ... }
         setIsEditing(false);
       } else {
         setError(response.data.message || "Failed to update profile");
@@ -88,6 +86,19 @@ function Profile({ user, onClose, profileIdToView }) {
       setError(errorMessage);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteProjectFromProfile = async (projectId) => {
+    try {
+      await projectApi.deleteProject(projectId);
+      setUserProjects((prevProjects) =>
+        prevProjects.filter((project) => project._id !== projectId),
+      );
+      // Optionally, you might want to refresh the main dashboard projects if this modal is open
+    } catch (err) {
+      console.error("Error deleting project from profile:", err);
+      setError("Failed to delete project.");
     }
   };
 
@@ -253,7 +264,31 @@ function Profile({ user, onClose, profileIdToView }) {
             {userProjects.length > 0 ? (
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 {userProjects.map((project) => (
-                  <ProjectCard key={project._id} project={project} />
+                  <ProjectCard
+                    key={project._id}
+                    project={project}
+                    onViewProfile={
+                      onClose
+                        ? (userId) => {
+                            // If in modal, close current modal and let parent handle new profile modal
+                            onClose();
+                            // This assumes the parent (Dashboard/ProjectView) has a way to open a new profile modal
+                            // For simplicity, we'll just log here, but in a real app, you'd pass a prop to handle this
+                            console.log(
+                              "Attempting to view profile for:",
+                              userId,
+                            );
+                            // Alternatively, you could directly call openProfileModal from the parent here if it's passed down
+                          }
+                        : undefined
+                    } // Pass undefined if not in a modal context
+                    onDelete={
+                      isCurrentUserProfile
+                        ? handleDeleteProjectFromProfile
+                        : undefined
+                    } // Only allow deletion if current user and their project
+                    currentUser={user} // Pass current user for conditional delete button
+                  />
                 ))}
               </div>
             ) : (

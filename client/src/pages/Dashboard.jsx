@@ -100,11 +100,16 @@ function Dashboard({ user }) {
 
   const handleDeleteAllProjects = async () => {
     try {
+      // Filter projects to only delete those owned by the current user
+      const userOwnedProjects = projects.filter(
+        (project) => project.owner._id === user._id
+      );
+
       await Promise.all(
-        projects.map((project) => projectApi.deleteProject(project._id)),
-      ); // Delete all projects
-      setProjects([]);
-      setFilteredProjects([]);
+        userOwnedProjects.map((project) => projectApi.deleteProject(project._id)),
+      );
+      // After successful deletion, refetch projects to update the list
+      fetchProjects();
     } catch (err) {
       console.error("Error deleting all projects:", err);
       setError("Failed to delete all projects.");
@@ -148,7 +153,7 @@ function Dashboard({ user }) {
             onClick={handleDeleteAllProjects}
             className="flex items-center gap-2 rounded bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700"
           >
-            <FiTrash className="h-5 w-5" /> Delete All Projects
+            <FiTrash className="h-5 w-5" /> Delete All My Projects
           </button>
         </div>
       </div>
@@ -168,12 +173,13 @@ function Dashboard({ user }) {
       {/* Projects Section */}
       {filteredProjects.length > 0 ? (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredProjects.map((project) => (
+          {filteredProjects.map((project, index) => (
             <ProjectCard
-              key={project._id}
+              key={project._id || index}
               project={project}
               onViewProfile={openProfileModal}
               onDelete={handleDeleteProject}
+              currentUser={user} // Pass current user to ProjectCard for conditional delete button
             />
           ))}
         </div>
