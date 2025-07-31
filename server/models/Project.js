@@ -11,26 +11,24 @@ const projectSchema = new mongoose.Schema(
     description: {
       type: String,
       required: [true, 'Project description is required'],
-      maxlength: [1000, 'Description cannot exceed 1000 characters'],
+      maxlength: [2000, 'Description cannot exceed 2000 characters'],
     },
-    links: {
-      github: {
-        type: String,
-        validate: {
-          validator: function (v) {
-            return !v || /^https?:\/\//.test(v);
-          },
-          message: 'Please enter a valid URL',
+    links: { 
+      type: [String],
+      default: [],
+      validate: {
+        validator: function (v) {
+          if (!v || v.length === 0) return true;
+          return v.every(link => {
+            try {
+              new URL(link);
+              return true;
+            } catch (e) {
+              return false;
+            }
+          });
         },
-      },
-      live: {
-        type: String,
-        validate: {
-          validator: function (v) {
-            return !v || /^https?:\/\//.test(v);
-          },
-          message: 'Please enter a valid URL',
-        },
+        message: 'Please enter valid URLs for links',
       },
     },
     technologies: [
@@ -74,7 +72,6 @@ const projectSchema = new mongoose.Schema(
   }
 );
 
-// Index for search functionality
 projectSchema.index({
   title: 'text',
   description: 'text',

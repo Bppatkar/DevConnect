@@ -1,44 +1,46 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import ProjectView from './pages/ProjectView';
 import Navbar from './components/Navbar';
+import { authApi } from './utils/api';
 
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is logged in
-    const token = localStorage.getItem('token');
-    if (token) {
-      // Verify token and get user data
-      fetchUser(token);
-    } else {
+    const fetchCurrentUser = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const response = await authApi.getMe();
+          if (response.status === 200) {
+            setUser(response.data);
+          } else {
+            localStorage.removeItem('token');
+            setUser(null);
+          }
+        } catch (error) {
+          console.error('Error fetching current user:', error);
+          localStorage.removeItem('token');
+          setUser(null);
+        }
+      }
       setLoading(false);
-    }
+    };
+
+    fetchCurrentUser();
   }, []);
 
-  const fetchUser = async (token) => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/me`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-      } else {
-        localStorage.removeItem('token');
-      }
-    } catch (error) {
-      localStorage.removeItem('token');
-    } finally {
-      setLoading(false);
-    }
+  const handleAuthSuccess = (userData) => {
+    setUser(userData);
   };
 
   const logout = () => {
@@ -48,34 +50,44 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div className="min-h-screen flex items-center justify-center bg-background-DEFAULT">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-primary"></div>
       </div>
     );
   }
 
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-background-DEFAULT text-text-primary">
         {user && <Navbar user={user} onLogout={logout} />}
-        
-        <Routes>
-          <Route 
-            path="/" 
-            element={user ? <Navigate to="/dashboard" /> : <Home onLogin={setUser} />} 
-          />
-          <Route 
-            path="/dashboard" 
-            element={user ? <Dashboard user={user} /> : <Navigate to="/" />} 
-          />
-          <Route 
-            path="/project/:id" 
-            element={user ? <ProjectView user={user} /> : <Navigate to="/" />} 
-          />
-        </Routes>
+
+        <main className="flex-grow">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                user ? (
+                  <Navigate to="/dashboard" replace />
+                ) : (
+                  <Home onLogin={handleAuthSuccess} />
+                )
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={user ? <Dashboard user={user} /> : <Navigate to="/" replace />}
+            />
+            <Route
+              path="/project/:id"
+              element={user ? <ProjectView user={user} /> : <Navigate to="/" replace />}
+            />
+            <Route path="*" element={<Navigate to={user ? "/dashboard" : "/"} replace />} />
+          </Routes>
+        </main>
       </div>
     </Router>
   );
 }
 
 export default App;
+

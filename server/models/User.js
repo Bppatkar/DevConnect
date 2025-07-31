@@ -25,6 +25,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Password is required'],
       minlength: [6, 'Password must be at least 6 characters'],
+      select: false, // Do not return password by default in queries
     },
     bio: {
       type: String,
@@ -43,7 +44,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Hash password before saving and we are usnig bcrypt.js for it
+// Hash password before saving
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
 
@@ -68,4 +69,3 @@ userSchema.methods.toJSON = function () {
 };
 
 export default mongoose.model('User', userSchema);
-

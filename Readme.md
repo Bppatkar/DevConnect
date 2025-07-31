@@ -23,16 +23,23 @@ DevConnect/
 │   │   └── main.jsx
 │   ├── .env
 │   └── package.json
-├── server/                     # Backend Node.js app
+├── server/
+│   ├── config/
+│   │   └── db.js
+│   ├── controllers/
+│   │   ├── auth.js
+│   │   ├── project.js
+│   │   └── user.js
+│   ├── middleware/
+│   │   ├── auth.js
+│   │   └── errorHandler.js
 │   ├── models/
-│   │   ├── User.js
-│   │   └── Project.js
+│   │   ├── Project.js
+│   │   └── User.js
 │   ├── routes/
 │   │   ├── auth.js
-│   │   ├── users.js
-│   │   └── projects.js
-│   ├── middleware/
-│   │   └── auth.js
+│   │   ├── projects.js
+│   │   └── users.js
 │   ├── .env
 │   ├── package.json
 │   └── server.js
@@ -45,43 +52,45 @@ DevConnect is a full-stack web application that allows users to create profiles,
 
 ## Features
 
-* **Persistent User Authentication:** Secure signup and login functionality with JWT-based authentication
-* **User Profiles:** Create and manage personal profiles with basic information (username, email, bio)
-* **Project Showcase:** Users can post their projects with titles, descriptions, and relevant links (GitHub, live demo, etc.)
-* **Project Feedback:** Other users can view all projects and leave comments/feedback on them
-* **Search Functionality:** Search for other users by name or projects by keywords in title/description
-* **Responsive Design:** Visually clean and responsive user interface built with Tailwind CSS, adapting to various screen sizes
-* **Real-time Updates:** Dynamic content updates without page refresh
+- **Persistent User Authentication:** Secure signup and login functionality with JWT-based authentication
+- **User Profiles:** Create and manage personal profiles with basic information (username, email, bio)
+- **Project Showcase:** Users can post their projects with titles, descriptions, and relevant links (GitHub, live demo, etc.)
+- **Project Feedback:** Other users can view all projects and leave comments/feedback on them
+- **Search Functionality:** Search for other users by name or projects by keywords in title/description
+- **Responsive Design:** Visually clean and responsive user interface built with Tailwind CSS, adapting to various screen sizes
+- **Real-time Updates:** Dynamic content updates without page refresh
 
 ## Tech Stack
 
 This project is built using the MERN (MongoDB, Express.js, React, Node.js) stack, complemented by modern development tools and libraries.
 
 ### Frontend (Client)
-* **React 19:** Latest version of React for building modern user interfaces
-* **Vite:** Ultra-fast build tool and development server
-* **Tailwind CSS 4:** Latest utility-first CSS framework for styling
-* **Axios:** Promise-based HTTP client for API requests
-* **React Router DOM:** Declarative routing for single-page applications
-* **React Icons:** Popular icon library for React components
+
+- **React 19:** Latest version of React for building modern user interfaces
+- **Vite:** Ultra-fast build tool and development server
+- **Tailwind CSS 4:** Latest utility-first CSS framework for styling
+- **Axios:** Promise-based HTTP client for API requests
+- **React Router DOM:** Declarative routing for single-page applications
+- **React Icons:** Popular icon library for React components
 
 ### Backend (Server)
-* **Node.js:** JavaScript runtime for server-side development
-* **Express.js:** Fast and minimalist web framework
-* **MongoDB:** NoSQL database for flexible data storage
-* **Mongoose:** ODM library for MongoDB with schema validation
-* **bcrypt:** Secure password hashing
-* **jsonwebtoken (JWT):** Stateless authentication tokens
-* **cors:** Cross-Origin Resource Sharing middleware
-* **dotenv:** Environment variable management
+
+- **Node.js:** JavaScript runtime for server-side development
+- **Express.js:** Fast and minimalist web framework
+- **MongoDB:** NoSQL database for flexible data storage
+- **Mongoose:** ODM library for MongoDB with schema validation
+- **bcrypt:** Secure password hashing
+- **jsonwebtoken (JWT):** Stateless authentication tokens
+- **cors:** Cross-Origin Resource Sharing middleware
+- **dotenv:** Environment variable management
 
 ## Prerequisites
 
 Before you begin, ensure you have the following installed on your machine:
 
-* Node.js (v18 or higher recommended)
-* npm (Node Package Manager)
-* MongoDB (local installation or a cloud service like MongoDB Atlas)
+- Node.js (v18 or higher recommended)
+- npm (Node Package Manager)
+- MongoDB (local installation or a cloud service like MongoDB Atlas)
 
 ## Installation & Setup
 
@@ -95,6 +104,7 @@ cd DevConnect
 ```
 
 ### 2. Backend Setup
+
 Navigate into the server directory and install dependencies:
 
 ```bash
@@ -103,6 +113,7 @@ npm install
 ```
 
 #### Environment Variables for Backend
+
 Create a `.env` file in the `server` directory and add the following:
 
 ```env
@@ -115,6 +126,7 @@ NODE_ENV=development
 **Note:** Replace `your_mongodb_connection_string_here` with your actual MongoDB connection URI. If you're using MongoDB Atlas, you can find this in your cluster's "Connect" section.
 
 ### 3. Frontend Setup
+
 Navigate into the client directory and install dependencies:
 
 ```bash
@@ -123,6 +135,7 @@ npm install
 ```
 
 #### Environment Variables for Frontend
+
 Create a `.env` file in the `client` directory and add the following:
 
 ```env
@@ -132,6 +145,7 @@ VITE_API_BASE_URL=http://localhost:5173
 ## Running the Application
 
 ### 1. Start the Backend Server
+
 From the `server` directory:
 
 ```bash
@@ -143,6 +157,7 @@ npm start    # For production
 The server will start on port 5000 (or your specified PORT). You should see messages indicating that MongoDB is connected and the server is running.
 
 ### 2. Start the Frontend Development Server
+
 From the `client` directory:
 
 ```bash
@@ -156,11 +171,14 @@ This will start the Vite development server, usually at http://localhost:5173. T
 Here's a summary of the key API endpoints exposed by the backend:
 
 ### Authentication
+
 - **POST /api/auth/signup**: Register a new user.
+
   - Request Body: `{ username, email, password }`
   - Response: `{ token, user: { id, username, email } }`
 
 - **POST /api/auth/login**: Authenticate a user and get a JWT.
+
   - Request Body: `{ email, password }`
   - Response: `{ token, user: { id, username, email } }`
 
@@ -169,22 +187,28 @@ Here's a summary of the key API endpoints exposed by the backend:
   - Response: `{ id, username, email, bio, projects }`
 
 ### Users
+
 - **GET /api/users/search?q=<keyword>**: Search for users by username.
   - Response: `[ { id, username, email, bio } ]`
 
 ### Projects
+
 - **POST /api/projects** (Protected): Create a new project.
+
   - Headers: `x-auth-token: <JWT>`
   - Request Body: `{ title, description, links: [] }`
   - Response: `{ project_object }`
 
 - **GET /api/projects**: Get all projects.
+
   - Response: `[ { project_object, owner: { username, email } } ]`
 
 - **GET /api/projects/:id**: Get a single project by ID.
+
   - Response: `{ project_object, owner: { username, email }, comments: [ { user: { username }, text, createdAt } ] }`
 
 - **POST /api/projects/:id/comments** (Protected): Add a comment to a project.
+
   - Headers: `x-auth-token: <JWT>`
   - Request Body: `{ text }`
   - Response: `[ { comment_object } ]`
@@ -206,6 +230,7 @@ The client-side routing is handled by react-router-dom:
 ## Database Schema
 
 ### User Model (models/User.js)
+
 - `username`: String, unique, required
 - `email`: String, unique, required, email format
 - `password`: String, required (hashed)
@@ -214,6 +239,7 @@ The client-side routing is handled by react-router-dom:
 - `createdAt`: Date
 
 ### Project Model (models/Project.js)
+
 - `title`: String, required
 - `description`: String, required
 - `links`: Array of Strings
@@ -257,6 +283,6 @@ This project was created as part of a full-stack developer assignment. Feel free
 ## Author
 
 **Bhanu Pratap Patkar**
+
 - GitHub: [@Bppatkar](https://github.com/Bppatkar)
 - LinkedIn: [Your LinkedIn Profile]
-
