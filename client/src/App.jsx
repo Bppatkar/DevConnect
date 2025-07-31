@@ -8,6 +8,7 @@ import {
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import ProjectView from "./pages/ProjectView";
+import UserList from "./pages/UserList"; 
 import Navbar from "./components/Navbar";
 import { authApi } from "./utils/api";
 
@@ -88,6 +89,12 @@ function App() {
               path="/project/:id"
               element={
                 user ? <ProjectView user={user} /> : <Navigate to="/" replace />
+              }
+            />
+            <Route
+              path="/users" 
+              element={
+                user ? <UserList user={user} /> : <Navigate to="/" replace />
               }
             />
             <Route

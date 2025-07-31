@@ -73,8 +73,8 @@ export const searchUsers = async (req, res, next) => {
     const users = await User.find({
       $or: [
         { username: { $regex: searchRegex } },
-        { email: { $regex: searchRegex } }
-      ]
+        { email: { $regex: searchRegex } },
+      ],
     })
       .select('-password')
       .limit(10);
@@ -95,7 +95,10 @@ export const deleteAccount = async (req, res, next) => {
     // Delete the user account
     await User.findByIdAndDelete(userId);
 
-    res.json({ success: true, message: 'Account and associated projects deleted successfully' });
+    res.json({
+      success: true,
+      message: 'Account and associated projects deleted successfully',
+    });
   } catch (error) {
     next(error);
   }

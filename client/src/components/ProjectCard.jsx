@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FiHeart, FiMessageSquare, FiTrash } from "react-icons/fi";
+import { FiHeart, FiMessageSquare, FiTrash, FiEdit } from "react-icons/fi"; // Import FiEdit
 
-function ProjectCard({ project, onViewProfile, onDelete, currentUser }) {
+function ProjectCard({ project, onViewProfile, onDelete, currentUser, onEditProject }) { // New prop: onEditProject
   const { _id, title, description, technologies, owner, likes, comments } =
     project;
 
@@ -23,15 +23,26 @@ function ProjectCard({ project, onViewProfile, onDelete, currentUser }) {
             by {owner?.username || "Unknown"}
           </button>
         </div>
-        {isOwner && (
-          <button
-            onClick={() => onDelete(_id)} // Pass project ID to the callback
-            className="text-red-400 transition-colors hover:text-red-600"
-            title="Delete Project"
-          >
-            <FiTrash className="h-5 w-5" />
-          </button>
-        )}
+        <div className="flex gap-2"> {/* Container for action buttons */}
+          {isOwner && onEditProject && ( // Show edit button if owner and onEditProject prop is provided
+            <button
+              onClick={() => onEditProject(project)} // Pass the entire project object for editing
+              className="text-blue-400 transition-colors hover:text-blue-600"
+              title="Edit Project"
+            >
+              <FiEdit className="h-5 w-5" />
+            </button>
+          )}
+          {isOwner && (
+            <button
+              onClick={() => onDelete(_id)} // Pass project ID to the callback
+              className="text-red-400 transition-colors hover:text-red-600"
+              title="Delete Project"
+            >
+              <FiTrash className="h-5 w-5" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Description */}

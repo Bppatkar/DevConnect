@@ -16,9 +16,11 @@ const setAuthHeader = (token) => {
   };
 };
 
+// --- Authentication API Calls ---
 export const authApi = {
   signup: (userData) => api.post("/auth/signup", userData),
   login: (credentials) => api.post("/auth/login", credentials),
+  // For getMe, the token needs to be passed explicitly or retrieved here
   getMe: async () => {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("No token found");
@@ -40,6 +42,16 @@ export const projectApi = {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("Authentication required to create project");
     return api.post("/projects", projectData, setAuthHeader(token));
+  },
+  updateProject: async (projectId, projectData) => {
+    // New: updateProject API call
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("Authentication required to update project");
+    return api.patch(
+      `/projects/${projectId}`,
+      projectData,
+      setAuthHeader(token),
+    );
   },
   addComment: async (projectId, commentData) => {
     const token = localStorage.getItem("token");
@@ -69,6 +81,12 @@ export const projectApi = {
 
 // --- User API Calls ---
 export const userApi = {
+  getAllUsers: async () => {
+    // New: getAllUsers API call
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("Authentication required to view users");
+    return api.get("/users", setAuthHeader(token));
+  },
   searchUsers: async (query) => {
     const token = localStorage.getItem("token"); // User search requires authentication
     if (!token) throw new Error("Authentication required to search users");
@@ -84,6 +102,12 @@ export const userApi = {
     if (!token) throw new Error("Authentication required to update profile");
     return api.patch("/users/me", profileData, setAuthHeader(token)); // Assuming PATCH /api/users/me route
   },
+  deleteAccount: async () => {
+    // New: deleteAccount API call
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("Authentication required to delete account");
+    return api.delete("/users/account", setAuthHeader(token));
+  },
 };
 
-export default api; 
+export default api;

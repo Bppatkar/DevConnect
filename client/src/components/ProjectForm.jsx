@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { FiX, FiPlusCircle } from "react-icons/fi";
+import React, { useState, useEffect } from "react"; // Import useEffect
+import { FiX, FiPlusCircle, FiEdit } from "react-icons/fi"; // Import FiEdit
 import { projectApi } from "../utils/api";
 
-function ProjectForm({ onClose, onProjectAdded }) {
+function ProjectForm({ onClose, onProjectAdded, onProjectUpdated, projectToEdit }) { // New prop: projectToEdit
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
@@ -11,6 +11,18 @@ function ProjectForm({ onClose, onProjectAdded }) {
     links: [""],
     technologies: "",
   });
+
+  // Populate form data if a project is being edited
+  useEffect(() => {
+    if (projectToEdit) {
+      setFormData({
+        title: projectToEdit.title || "",
+        description: projectToEdit.description || "",
+        links: projectToEdit.links && projectToEdit.links.length > 0 ? [...projectToEdit.links] : [""],
+        technologies: projectToEdit.technologies ? projectToEdit.technologies.join(", ") : "",
+      });
+    }
+  }, [projectToEdit]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,13 +66,13 @@ function ProjectForm({ onClose, onProjectAdded }) {
         technologies: technologiesArray,
       };
 
-      const response = await projectApi.createProject(projectData);
-
-      if (response.status === 200 || response.status === 201) {
-        // Assuming 200 or 201 for success
-        onProjectAdded(response.data.project); // Pass the created project data, assuming backend returns { success: true, project: ... }
+      let response;
+      if (projectToEdit) {
+        response = await projectApi.updateProject(projectToEdit._id, projectData);
+        onProjectUpdated(response.data.project); // Call update handler
       } else {
-        setError(response.data.message || "Failed to create project");
+        response = await projectApi.createProject(projectData);
+        onProjectAdded(response.data.project); // Call add handler
       }
     } catch (err) {
       const errorMessage =
@@ -78,7 +90,7 @@ function ProjectForm({ onClose, onProjectAdded }) {
           {/* Header */}
           <div className="mb-6 flex items-center justify-between">
             <h2 className="text-3xl font-bold text-white">
-              Add New Project
+              {projectToEdit ? "Edit Project" : "Add New Project"}
             </h2>
             <button
               onClick={onClose}
@@ -206,7 +218,7 @@ function ProjectForm({ onClose, onProjectAdded }) {
                 disabled={loading}
                 className="flex-1 rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700 disabled:bg-blue-300"
               >
-                {loading ? "Creating Project..." : "Create Project"}
+                {loading ? (projectToEdit ? "Updating..." : "Creating Project...") : (projectToEdit ? "Update Project" : "Create Project")}
               </button>
             </div>
           </form>

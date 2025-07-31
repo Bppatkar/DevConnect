@@ -4,21 +4,22 @@
 
 ```
 DevConnect/
-├── client/                     # Frontend React app
+├── client/
 │   ├── src/
-│   │   ├── components/         # UI components
-│   │   │   ├── Auth.jsx        # Login & Signup combined
-│   │   │   ├── Projectbg-white rounded-lg shadow-md p-6.jsx # Project display
-│   │   │   ├── ProjectForm.jsx # Add/Edit project
-│   │   │   ├── Profile.jsx     # User profile
-│   │   │   ├── Navbar.jsx      # Navigation
-│   │   │   └── SearchBar.jsx   # Search functionality
-│   │   ├── pages/              # Main pages
-│   │   │   ├── Home.jsx        # Landing page
-│   │   │   ├── Dashboard.jsx   # Main app view
-│   │   │   └── ProjectView.jsx # Project details
+│   │   ├── components/
+│   │   │   ├── Auth.jsx
+│   │   │   ├── ProjectCard.jsx
+│   │   │   ├── ProjectForm.jsx
+│   │   │   ├── Profile.jsx
+│   │   │   ├── Navbar.jsx
+│   │   │   └── SearchBar.jsx
+│   │   ├── pages/
+│   │   │   ├── Home.jsx
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── ProjectView.jsx
+│   │   │   └── UserList.jsx
 │   │   ├── utils/
-│   │   │   └── api.js          # API calls
+│   │   │   └── api.js
 │   │   ├── App.jsx
 │   │   └── main.jsx
 │   ├── .env
@@ -52,13 +53,18 @@ DevConnect is a full-stack web application that allows users to create profiles,
 
 ## Features
 
-- **Persistent User Authentication:** Secure signup and login functionality with JWT-based authentication
-- **User Profiles:** Create and manage personal profiles with basic information (username, email, bio)
-- **Project Showcase:** Users can post their projects with titles, descriptions, and relevant links (GitHub, live demo, etc.)
-- **Project Feedback:** Other users can view all projects and leave comments/feedback on them
-- **Search Functionality:** Search for other users by name or projects by keywords in title/description
-- **Responsive Design:** Visually clean and responsive user interface built with Tailwind CSS, adapting to various screen sizes
-- **Real-time Updates:** Dynamic content updates without page refresh
+- **Persistent User Authentication**: Secure signup and login functionality with JWT-based authentication
+- **User Profiles**: Create and manage personal profiles with basic information (username, email, bio)
+- **Project Showcase**: Users can post their projects with titles, descriptions, and relevant links (GitHub, live demo, etc.)
+- **Edit Projects**: Project owners can update their existing project details (NEW)
+- **Project Feedback**: Other users can view all projects and leave comments/feedback on them
+- **Liking/Upvoting Projects**: Users can like or unlike projects
+- **Search Functionality**: Search for projects by keywords in title/description/technologies and for users by username/email
+- **View All Users**: Browse a list of all registered developers on the platform (NEW)
+- **Delete Account**: Users can delete their entire account, which also removes all associated projects (NEW)
+- **Responsive Design**: Visually clean and responsive user interface built with Tailwind CSS, adapting to various screen sizes
+- **Real-time Updates**: Dynamic content updates without page refresh
+- **Professional Dark UI**: A sleek, modern dark theme applied consistently across the application (UPDATED)
 
 ## Tech Stack
 
@@ -66,23 +72,23 @@ This project is built using the MERN (MongoDB, Express.js, React, Node.js) stack
 
 ### Frontend (Client)
 
-- **React 19:** Latest version of React for building modern user interfaces
-- **Vite:** Ultra-fast build tool and development server
-- **Tailwind CSS 4:** Latest utility-first CSS framework for styling
-- **Axios:** Promise-based HTTP client for API requests
-- **React Router DOM:** Declarative routing for single-page applications
-- **React Icons:** Popular icon library for React components
+- **React 19**: Latest version of React for building modern user interfaces
+- **Vite**: Ultra-fast build tool and development server
+- **Tailwind CSS 4**: Latest utility-first CSS framework for styling
+- **Axios**: Promise-based HTTP client for API requests
+- **React Router DOM**: Declarative routing for single-page applications
+- **React Icons**: Popular icon library for React components
 
 ### Backend (Server)
 
-- **Node.js:** JavaScript runtime for server-side development
-- **Express.js:** Fast and minimalist web framework
-- **MongoDB:** NoSQL database for flexible data storage
-- **Mongoose:** ODM library for MongoDB with schema validation
-- **bcrypt:** Secure password hashing
-- **jsonwebtoken (JWT):** Stateless authentication tokens
-- **cors:** Cross-Origin Resource Sharing middleware
-- **dotenv:** Environment variable management
+- **Node.js**: JavaScript runtime for server-side development
+- **Express.js**: Fast and minimalist web framework
+- **MongoDB**: NoSQL database for flexible data storage
+- **Mongoose**: ODM library for MongoDB with schema validation
+- **bcrypt**: Secure password hashing
+- **jsonwebtoken (JWT)**: Stateless authentication tokens
+- **cors**: Cross-Origin Resource Sharing middleware
+- **dotenv**: Environment variable management
 
 ## Prerequisites
 
@@ -114,16 +120,16 @@ npm install
 
 #### Environment Variables for Backend
 
-Create a `.env` file in the `server` directory and add the following:
+Create a `.env` file in the server directory and add the following:
 
 ```env
 MONGO_URI=your_mongodb_connection_string_here
 JWT_SECRET=your_super_secret_jwt_key_here
-PORT=5000
+PORT=8080 # Ensure this matches your client's VITE_API_BASE_URL port
 NODE_ENV=development
 ```
 
-**Note:** Replace `your_mongodb_connection_string_here` with your actual MongoDB connection URI. If you're using MongoDB Atlas, you can find this in your cluster's "Connect" section.
+> **Note**: Replace `your_mongodb_connection_string_here` with your actual MongoDB connection URI. If you're using MongoDB Atlas, you can find this in your cluster's "Connect" section.
 
 ### 3. Frontend Setup
 
@@ -136,17 +142,17 @@ npm install
 
 #### Environment Variables for Frontend
 
-Create a `.env` file in the `client` directory and add the following:
+Create a `.env` file in the client directory and add the following:
 
 ```env
-VITE_API_BASE_URL=http://localhost:5173
+VITE_API_BASE_URL=http://localhost:8080/api # Ensure this matches your backend's PORT
 ```
 
 ## Running the Application
 
 ### 1. Start the Backend Server
 
-From the `server` directory:
+From the server directory:
 
 ```bash
 npm run dev  # For development with nodemon
@@ -154,17 +160,17 @@ npm run dev  # For development with nodemon
 npm start    # For production
 ```
 
-The server will start on port 5000 (or your specified PORT). You should see messages indicating that MongoDB is connected and the server is running.
+The server will start on port 8080 (or your specified PORT). You should see messages indicating that MongoDB is connected and the server is running.
 
 ### 2. Start the Frontend Development Server
 
-From the `client` directory:
+From the client directory:
 
 ```bash
 npm run dev
 ```
 
-This will start the Vite development server, usually at http://localhost:5173. The application will automatically open in your default web browser.
+This will start the Vite development server, usually at `http://localhost:5173`. The application will automatically open in your default web browser.
 
 ## API Endpoints (Backend)
 
@@ -172,60 +178,95 @@ Here's a summary of the key API endpoints exposed by the backend:
 
 ### Authentication
 
-- **POST /api/auth/signup**: Register a new user.
+- **POST** `/api/auth/signup`: Register a new user
 
   - Request Body: `{ username, email, password }`
   - Response: `{ token, user: { id, username, email } }`
 
-- **POST /api/auth/login**: Authenticate a user and get a JWT.
+- **POST** `/api/auth/login`: Authenticate a user and get a JWT
 
   - Request Body: `{ email, password }`
   - Response: `{ token, user: { id, username, email } }`
 
-- **GET /api/auth/user** (Protected): Get the currently authenticated user's details.
-  - Headers: `x-auth-token: <JWT>`
-  - Response: `{ id, username, email, bio, projects }`
+- **GET** `/api/auth/me` (Protected): Get the currently authenticated user's details
+  - Headers: `Authorization: Bearer <JWT>`
+  - Response: `{ success: true, user: { id, username, email, bio, projects } }`
 
 ### Users
 
-- **GET /api/users/search?q=<keyword>**: Search for users by username.
-  - Response: `[ { id, username, email, bio } ]`
+- **GET** `/api/users` (Protected): Get a list of all registered users (NEW)
+
+  - Headers: `Authorization: Bearer <JWT>`
+  - Response: `{ success: true, count: <number>, users: [ { id, username, email, bio } ] }`
+
+- **GET** `/api/users/:id`: Get a single user's profile by ID
+
+  - Response: `{ success: true, user: { id, username, email, bio, projects } }`
+
+- **PATCH** `/api/users/me` (Protected): Update the current user's profile
+
+  - Headers: `Authorization: Bearer <JWT>`
+  - Request Body: `{ username?, email?, bio? }`
+  - Response: `{ success: true, user: { id, username, email, bio } }`
+
+- **GET** `/api/users/search?q=<keyword>` (Protected): Search for users by username or email
+
+  - Headers: `Authorization: Bearer <JWT>`
+  - Response: `{ success: true, count: <number>, users: [ { id, username, email, bio } ] }`
+
+- **DELETE** `/api/users/account` (Protected): Delete the currently authenticated user's account and all their projects (NEW)
+  - Headers: `Authorization: Bearer <JWT>`
+  - Response: `{ success: true, message: 'Account and associated projects deleted successfully' }`
 
 ### Projects
 
-- **POST /api/projects** (Protected): Create a new project.
+- **GET** `/api/projects`: Get all projects
 
-  - Headers: `x-auth-token: <JWT>`
-  - Request Body: `{ title, description, links: [] }`
-  - Response: `{ project_object }`
+  - Response: `{ success: true, count: <number>, projects: [ { project_object, owner: { username, email } } ] }`
 
-- **GET /api/projects**: Get all projects.
+- **GET** `/api/projects/:id`: Get a single project by ID
 
-  - Response: `[ { project_object, owner: { username, email } } ]`
+  - Response: `{ success: true, project: { project_object, owner: { username, email, bio }, comments: [ { user: { username }, text, createdAt } ], likes: [] } }`
 
-- **GET /api/projects/:id**: Get a single project by ID.
+- **POST** `/api/projects` (Protected): Create a new project
 
-  - Response: `{ project_object, owner: { username, email }, comments: [ { user: { username }, text, createdAt } ] }`
+  - Headers: `Authorization: Bearer <JWT>`
+  - Request Body: `{ title, description, links: [], technologies: [] }`
+  - Response: `{ success: true, project: { project_object } }`
 
-- **POST /api/projects/:id/comments** (Protected): Add a comment to a project.
+- **PATCH** `/api/projects/:id` (Protected): Update an existing project (NEW)
 
-  - Headers: `x-auth-token: <JWT>`
+  - Headers: `Authorization: Bearer <JWT>`
+  - Request Body: `{ title?, description?, links?: [], technologies?: [] }`
+  - Response: `{ success: true, project: { project_object } }`
+
+- **DELETE** `/api/projects/:id` (Protected): Delete a project by ID (only by owner)
+
+  - Headers: `Authorization: Bearer <JWT>`
+  - Response: `{ success: true, message: 'Project deleted successfully' }`
+
+- **POST** `/api/projects/:id/comments` (Protected): Add a comment to a project
+
+  - Headers: `Authorization: Bearer <JWT>`
   - Request Body: `{ text }`
-  - Response: `[ { comment_object } ]`
+  - Response: `{ success: true, comments: [ { comment_object } ] }`
 
-- **GET /api/projects/search?q=<keyword>**: Search for projects by title or description.
-  - Response: `[ { project_object, owner: { username, email } } ]`
+- **POST** `/api/projects/:id/like` (Protected): Toggle like status for a project
+
+  - Headers: `Authorization: Bearer <JWT>`
+  - Response: `{ success: true, project: { updated_project_object }, liked: <boolean>, message: <string> }`
+
+- **GET** `/api/projects/search?q=<keyword>`: Search for projects by title, description, or technologies
+  - Response: `{ success: true, count: <number>, projects: [ { project_object, owner: { username, email } } ] }`
 
 ## Frontend Routes
 
 The client-side routing is handled by react-router-dom:
 
 - `/`: Login/Signup Page (if not authenticated)
-- `/home` (or default after login): Main application dashboard, showing projects.
-- `/profile`: User's personal profile page.
-- `/projects/add`: Form to add a new project.
-- `/projects/:id`: Detailed view of a single project.
-- `/search`: Page for searching users and projects.
+- `/dashboard`: Main application dashboard, showing projects
+- `/project/:id`: Detailed view of a single project
+- `/users`: List of all registered users (NEW)
 
 ## Database Schema
 
@@ -248,19 +289,20 @@ The client-side routing is handled by react-router-dom:
   - `user`: ObjectId (references User model)
   - `text`: String, required
   - `createdAt`: Date
+- `likes`: Array of User IDs (references User model)
+- `technologies`: Array of Strings
 - `createdAt`: Date
 
 ## Future Enhancements / To-Do
 
-- **Profile Picture Upload**: Integrate multer for user profile picture uploads.
-- **Project Images/Videos**: Allow uploading media for projects.
-- **Password Reset**: Implement forgot password functionality.
-- **Email Verification**: Add email confirmation for new signups.
-- **Notifications**: Implement real-time notifications for new comments or project updates.
-- **Pagination**: For large lists of projects or search results.
-- **User Roles**: Differentiate between regular users and administrators.
-- **Liking/Upvoting Projects**: Add social interaction features.
-- **Deployment Automation**: CI/CD pipeline for automated deployments.
+- **Profile Picture Upload**: Integrate multer for user profile picture uploads
+- **Project Images/Videos**: Allow uploading media for projects
+- **Password Reset**: Implement forgot password functionality
+- **Email Verification**: Add email confirmation for new signups
+- **Notifications**: Implement real-time notifications for new comments or project updates
+- **Pagination**: For large lists of projects or search results
+- **User Roles**: Differentiate between regular users and administrators
+- **Deployment Automation**: CI/CD pipeline for automated deployments
 
 ## Deployment Notes
 
@@ -273,8 +315,8 @@ Remember to update your `VITE_API_BASE_URL` in the client's `.env` and `MONGO_UR
 
 ## Live Demo
 
-- **Frontend**: [Deployed on Netlify/Vercel] - `https://your-app-name.netlify.app`
-- **Backend**: [Deployed on Render] - `https://your-api-name.onrender.com`
+- **Frontend**: [Deployed on Netlify/Vercel] - https://your-app-name.netlify.app
+- **Backend**: [Deployed on Render] - https://your-api-name.onrender.com
 
 ## Contributing
 

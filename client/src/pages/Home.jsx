@@ -1,11 +1,24 @@
 import React from "react";
 import Auth from "../components/Auth";
 
+const gradientColors = {
+  start: "#FFC107",
+  middle: "#FF9800",
+  end: "#FF69B4",
+};
+
 const textGradientStyle = {
-  background: 'linear-gradient(to right, #6366F1, #8B5CF6, #EC4899)', 
+  background: `linear-gradient(to right, ${gradientColors.start}, ${gradientColors.middle}, ${gradientColors.end})`,
   WebkitBackgroundClip: 'text',
   WebkitTextFillColor: 'transparent',
 };
+
+// Style for buttons using the same gradient
+const buttonGradientStyle = {
+  background: `linear-gradient(to right, ${gradientColors.start}, ${gradientColors.middle}, ${gradientColors.end})`,
+  border: 'none', // Remove default border if any
+};
+
 
 function Home({ onLogin }) {
   return (
@@ -28,7 +41,7 @@ function Home({ onLogin }) {
         <div className="mb-16 grid gap-8 md:grid-cols-3">
           {/* Feature 1 */}
           <div className="flex flex-col items-center rounded-xl bg-gray-800/50 p-8 text-center shadow-2xl backdrop-blur-md transition-all duration-300 hover:scale-105 hover:bg-gray-700/60 border border-gray-700">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 shadow-lg">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full shadow-lg" style={buttonGradientStyle}> {/* Applied gradient to icon background */}
               <svg
                 className="h-8 w-8 text-white"
                 fill="none"
@@ -53,7 +66,7 @@ function Home({ onLogin }) {
 
           {/* Feature 2 */}
           <div className="flex flex-col items-center rounded-xl bg-gray-800/50 p-8 text-center shadow-2xl backdrop-blur-md transition-all duration-300 hover:scale-105 hover:bg-gray-700/60 border border-gray-700">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 shadow-lg">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full shadow-lg" style={buttonGradientStyle}> {/* Applied gradient to icon background */}
               <svg
                 className="h-8 w-8 text-white"
                 fill="none"
@@ -79,7 +92,7 @@ function Home({ onLogin }) {
 
           {/* Feature 3 */}
           <div className="flex flex-col items-center rounded-xl bg-gray-800/50 p-8 text-center shadow-2xl backdrop-blur-md transition-all duration-300 hover:scale-105 hover:bg-gray-700/60 border border-gray-700">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 shadow-lg">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full shadow-lg" style={buttonGradientStyle}> {/* Applied gradient to icon background */}
               <svg
                 className="h-8 w-8 text-white"
                 fill="none"
@@ -105,7 +118,7 @@ function Home({ onLogin }) {
 
         {/* Authentication Section */}
         <div className="mx-auto max-w-md">
-          <Auth onLogin={onLogin} />
+          <Auth onLogin={onLogin} buttonGradientStyle={buttonGradientStyle} />
         </div>
       </div>
     </div>

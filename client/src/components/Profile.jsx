@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { FiEdit, FiSave, FiX, FiUser } from "react-icons/fi";
+import { FiEdit, FiSave, FiX, FiUser, FiTrash2 } from "react-icons/fi"; // Import FiTrash2 for delete account
 import { userApi, projectApi } from "../utils/api";
 import ProjectCard from "./ProjectCard.jsx";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection after account deletion
 
 function Profile({ user, onClose, profileIdToView }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -14,6 +15,8 @@ function Profile({ user, onClose, profileIdToView }) {
     bio: "",
   });
   const [userProjects, setUserProjects] = useState([]);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false); // State for delete confirmation
+  const navigate = useNavigate(); // Initialize navigate
 
   const isCurrentUserProfile = user && profileIdToView === user._id;
 
@@ -99,6 +102,23 @@ function Profile({ user, onClose, profileIdToView }) {
     } catch (err) {
       console.error("Error deleting project from profile:", err);
       setError("Failed to delete project.");
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      setLoading(true);
+      await userApi.deleteAccount();
+      localStorage.removeItem("token"); // Clear token
+      onClose(); // Close the modal
+      navigate("/"); // Redirect to home/login page
+      window.location.reload(); // Force a full reload to clear all state
+    } catch (err) {
+      console.error("Error deleting account:", err);
+      setError(err.response?.data?.message || "Failed to delete account.");
+    } finally {
+      setLoading(false);
+      setShowConfirmDelete(false); // Close confirmation modal
     }
   };
 
@@ -245,12 +265,18 @@ function Profile({ user, onClose, profileIdToView }) {
           </div>
 
           {isCurrentUserProfile && (
-            <div className="pt-4">
+            <div className="pt-4 flex flex-col gap-3">
               <button
                 onClick={() => setIsEditing(true)}
                 className="w-full rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700"
               >
                 Edit Profile
+              </button>
+              <button
+                onClick={() => setShowConfirmDelete(true)} // Open confirmation modal
+                className="w-full rounded bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700 flex items-center justify-center gap-2"
+              >
+                <FiTrash2 className="h-5 w-5" /> Delete Account
               </button>
             </div>
           )}
@@ -287,6 +313,31 @@ function Profile({ user, onClose, profileIdToView }) {
                   : "This user has no projects yet."}
               </p>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showConfirmDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+          <div className="rounded-lg bg-gray-900 p-8 shadow-lg border border-gray-700 max-w-sm text-center">
+            <h3 className="text-xl font-bold text-white mb-4">Confirm Account Deletion</h3>
+            <p className="text-gray-300 mb-6">Are you sure you want to delete your account? This action cannot be undone and will delete all your projects.</p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setShowConfirmDelete(false)}
+                className="rounded bg-gray-700 px-5 py-2 font-semibold text-white hover:bg-gray-600 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteAccount}
+                className="rounded bg-red-600 px-5 py-2 font-semibold text-white hover:bg-red-700 transition-colors"
+                disabled={loading}
+              >
+                {loading ? "Deleting..." : "Delete My Account"}
+              </button>
+            </div>
           </div>
         </div>
       )}

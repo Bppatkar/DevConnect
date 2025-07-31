@@ -74,6 +74,12 @@ function Dashboard({ user }) {
     setShowProjectForm(false);
   };
 
+  const handleProjectUpdated = (updatedProject) => { // New: Handler for updated project
+    setProjects(prevProjects => prevProjects.map(p => p._id === updatedProject._id ? updatedProject : p));
+    setFilteredProjects(prevFilteredProjects => prevFilteredProjects.map(p => p._id === updatedProject._id ? updatedProject : p));
+    setShowProjectForm(false);
+  };
+
   const handleSearch = (query) => {
     setSearchQuery(query);
   };
@@ -202,6 +208,7 @@ function Dashboard({ user }) {
         <ProjectForm
           onClose={() => setShowProjectForm(false)}
           onProjectAdded={handleProjectAdded}
+          onProjectUpdated={handleProjectUpdated} // Pass handler for updates
         />
       )}
 
