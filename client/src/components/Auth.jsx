@@ -53,12 +53,12 @@ function Auth({ onLogin }) {
   };
 
   return (
-    <div className="mx-auto max-w-md rounded-lg bg-white/80 p-6"> {/* Changed bg-white to bg-white/80 and removed shadow-md */}
+    <div className="mx-auto max-w-md rounded-lg bg-gray-900/70 p-6 backdrop-blur-sm border border-gray-700"> {/* Adjusted transparency, added blur and border */}
       {/* Toggle Buttons */}
       <div className="mb-8 flex justify-center">
         <button
           className={`rounded-t-lg px-6 py-3 text-lg font-semibold transition-colors ${
-            isLogin ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
+            isLogin ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300"
           }`}
           onClick={() => setIsLogin(true)}
         >
@@ -66,7 +66,7 @@ function Auth({ onLogin }) {
         </button>
         <button
           className={`rounded-t-lg px-6 py-3 text-lg font-semibold transition-colors ${
-            !isLogin ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
+            !isLogin ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300"
           }`}
           onClick={() => setIsLogin(false)}
         >
@@ -76,10 +76,10 @@ function Auth({ onLogin }) {
 
       {/* Header */}
       <div className="mb-6 text-center">
-        <h2 className="text-2xl font-semibold text-gray-900">
+        <h2 className="text-2xl font-semibold text-white"> 
           {isLogin ? "Welcome Back" : "Join DevConnect"}
         </h2>
-        <p className="mt-2 text-gray-600">
+        <p className="mt-2 text-gray-300"> 
           {isLogin
             ? "Sign in to your account"
             : "Create your developer profile"}
@@ -92,7 +92,7 @@ function Auth({ onLogin }) {
           <div>
             <label
               htmlFor="username"
-              className="mb-2 block text-sm font-medium text-gray-900"
+              className="mb-2 block text-sm font-medium text-white" 
             >
               Username
             </label>
@@ -102,7 +102,7 @@ function Auth({ onLogin }) {
               name="username"
               value={formData.username}
               onChange={handleChange}
-              className="w-full rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none" 
               placeholder="Enter your username"
               required={!isLogin}
             />
@@ -112,7 +112,7 @@ function Auth({ onLogin }) {
         <div>
           <label
             htmlFor="email"
-            className="mb-2 block text-sm font-medium text-gray-900"
+            className="mb-2 block text-sm font-medium text-white" 
           >
             Email
           </label>
@@ -122,7 +122,7 @@ function Auth({ onLogin }) {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none" 
             placeholder="Enter your email"
             required
           />
@@ -131,7 +131,7 @@ function Auth({ onLogin }) {
         <div>
           <label
             htmlFor="password"
-            className="mb-2 block text-sm font-medium text-gray-900"
+            className="mb-2 block text-sm font-medium text-white" 
             >
             Password
           </label>
@@ -141,14 +141,14 @@ function Auth({ onLogin }) {
             name="password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none" 
             placeholder="Enter your password"
             required
           />
         </div>
 
         {error && (
-          <div className="rounded-lg border border-red-600 bg-red-100 p-3 text-center text-sm text-red-600">
+          <div className="rounded-lg border border-red-700 bg-red-900/30 p-3 text-center text-sm text-red-400">
             {error}
           </div>
         )}
@@ -166,7 +166,7 @@ function Auth({ onLogin }) {
       <div className="mt-6 text-center">
         <button
           onClick={() => setIsLogin(!isLogin)}
-          className="text-sm text-blue-600 hover:underline"
+          className="text-sm text-blue-400 hover:underline" 
         >
           {isLogin
             ? "Don't have an account? Sign up"

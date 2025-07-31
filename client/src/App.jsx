@@ -50,7 +50,7 @@ function App() {
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-gray-50">
+      <div className="flex h-screen items-center justify-center bg-gray-900">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
       </div>
     );
@@ -58,7 +58,8 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gray-100 text-gray-900 font-sans">
+      {/* The main container for the application, ensuring a consistent dark background */}
+      <div className="min-h-screen bg-black text-white font-sans">
         {user && (
           <Navbar
             user={user}

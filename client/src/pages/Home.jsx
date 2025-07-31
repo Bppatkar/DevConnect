@@ -1,19 +1,24 @@
 import React from "react";
 import Auth from "../components/Auth";
 
+const textGradientStyle = {
+  background: 'linear-gradient(to right, #6366F1, #8B5CF6, #EC4899)', 
+  WebkitBackgroundClip: 'text',
+  WebkitTextFillColor: 'transparent',
+};
+
 function Home({ onLogin }) {
   return (
-    <div className="flex min-h-screen w-full flex-col items-center justify-center bg-gradient-to-br from-blue-600 to-purple-700 p-4">
+    // Ensure this outermost div covers the entire viewport with a pure black background
+    <div className="flex min-h-screen w-full flex-col items-center justify-center bg-black p-4">
       <div className="container mx-auto max-w-6xl py-8">
         {/* Header Section */}
         <div className="mb-16 text-center">
-          <h1 className="mb-6 text-5xl leading-tight font-extrabold text-white md:text-6xl">
+          <h1 className="mb-6 text-5xl leading-tight font-extrabold md:text-6xl" style={textGradientStyle}>
             Showcase Your <br />
-            <span className="mt-2 block text-indigo-100">
-              Developer Projects
-            </span>
+            Developer Projects
           </h1>
-          <p className="mx-auto mb-8 max-w-2xl text-xl text-indigo-100 opacity-90 md:text-2xl">
+          <p className="mx-auto mb-8 max-w-2xl text-xl text-gray-300 opacity-90 md:text-2xl">
             Connect with developers, share your work, and get valuable feedback
             from the community.
           </p>
@@ -22,8 +27,8 @@ function Home({ onLogin }) {
         {/* Features Section */}
         <div className="mb-16 grid gap-8 md:grid-cols-3">
           {/* Feature 1 */}
-          <div className="flex flex-col items-center rounded-xl bg-white/10 p-8 text-center shadow-xl backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:bg-white/20">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-indigo-500 shadow-md">
+          <div className="flex flex-col items-center rounded-xl bg-gray-800/50 p-8 text-center shadow-2xl backdrop-blur-md transition-all duration-300 hover:scale-105 hover:bg-gray-700/60 border border-gray-700">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 shadow-lg">
               <svg
                 className="h-8 w-8 text-white"
                 fill="none"
@@ -41,14 +46,14 @@ function Home({ onLogin }) {
             <h3 className="mb-2 text-2xl font-semibold text-white">
               Showcase Projects
             </h3>
-            <p className="text-lg text-indigo-100">
+            <p className="text-lg text-gray-300">
               Display your best work with descriptions, links, and tech stacks.
             </p>
           </div>
 
           {/* Feature 2 */}
-          <div className="flex flex-col items-center rounded-xl bg-white/10 p-8 text-center shadow-xl backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:bg-white/20">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-indigo-500 shadow-md">
+          <div className="flex flex-col items-center rounded-xl bg-gray-800/50 p-8 text-center shadow-2xl backdrop-blur-md transition-all duration-300 hover:scale-105 hover:bg-gray-700/60 border border-gray-700">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 shadow-lg">
               <svg
                 className="h-8 w-8 text-white"
                 fill="none"
@@ -66,15 +71,15 @@ function Home({ onLogin }) {
             <h3 className="mb-2 text-2xl font-semibold text-white">
               Get Feedback
             </h3>
-            <p className="text-lg text-indigo-100">
+            <p className="text-lg text-gray-300">
               Receive constructive comments and suggestions from other
               developers.
             </p>
           </div>
 
           {/* Feature 3 */}
-          <div className="flex flex-col items-center rounded-xl bg-white/10 p-8 text-center shadow-xl backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:bg-white/20">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-indigo-500 shadow-md">
+          <div className="flex flex-col items-center rounded-xl bg-gray-800/50 p-8 text-center shadow-2xl backdrop-blur-md transition-all duration-300 hover:scale-105 hover:bg-gray-700/60 border border-gray-700">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 shadow-lg">
               <svg
                 className="h-8 w-8 text-white"
                 fill="none"
@@ -92,7 +97,7 @@ function Home({ onLogin }) {
             <h3 className="mb-2 text-2xl font-semibold text-white">
               Discover & Connect
             </h3>
-            <p className="text-lg text-indigo-100">
+            <p className="text-lg text-gray-300">
               Find inspiring projects and connect with like-minded developers.
             </p>
           </div>

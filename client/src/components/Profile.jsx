@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { FiX, FiUser } from "react-icons/fi";
+import React, { useState, useEffect } from "react";
+import { FiEdit, FiSave, FiX, FiUser } from "react-icons/fi";
 import { userApi, projectApi } from "../utils/api";
 import ProjectCard from "./ProjectCard.jsx";
 
@@ -75,7 +75,7 @@ function Profile({ user, onClose, profileIdToView }) {
       const response = await userApi.updateProfile(formData);
 
       if (response.status === 200) {
-        setProfileData(response.data.user);
+        setProfileData(response.data.user); // Assuming backend returns { success: true, user: ... }
         setIsEditing(false);
       } else {
         setError(response.data.message || "Failed to update profile");
@@ -104,7 +104,7 @@ function Profile({ user, onClose, profileIdToView }) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-8">
+      <div className="flex items-center justify-center p-8 bg-gray-900">
         <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
       </div>
     );
@@ -112,7 +112,7 @@ function Profile({ user, onClose, profileIdToView }) {
 
   if (error && !profileData) {
     return (
-      <div className="rounded-lg bg-red-100 p-8 text-center text-red-600">
+      <div className="rounded-lg bg-red-900/30 p-8 text-center text-red-400 border border-red-700">
         <p>{error}</p>
       </div>
     );
@@ -120,7 +120,7 @@ function Profile({ user, onClose, profileIdToView }) {
 
   if (!profileData) {
     return (
-      <div className="p-8 text-center text-gray-600">
+      <div className="p-8 text-center text-gray-400 bg-gray-900 rounded-lg border border-gray-800">
         <p>Profile not found.</p>
       </div>
     );
@@ -130,7 +130,7 @@ function Profile({ user, onClose, profileIdToView }) {
     <div className="p-8">
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-3xl font-bold text-gray-900">
+        <h2 className="text-3xl font-bold text-white">
           {isCurrentUserProfile
             ? "My Profile"
             : `${profileData.username}'s Profile`}
@@ -138,7 +138,7 @@ function Profile({ user, onClose, profileIdToView }) {
         {onClose && (
           <button
             onClick={onClose}
-            className="text-gray-600 transition-colors hover:text-blue-600"
+            className="text-gray-400 transition-colors hover:text-blue-400"
           >
             <FiX className="h-8 w-8" />
           </button>
@@ -146,7 +146,7 @@ function Profile({ user, onClose, profileIdToView }) {
       </div>
 
       {error && (
-        <div className="mb-4 rounded-lg border border-red-500 bg-red-100 p-3 text-sm text-red-600">
+        <div className="mb-4 rounded-lg border border-red-700 bg-red-900/30 p-3 text-sm text-red-400">
           {error}
         </div>
       )}
@@ -156,7 +156,7 @@ function Profile({ user, onClose, profileIdToView }) {
           <div>
             <label
               htmlFor="username"
-              className="mb-2 block text-sm font-medium text-gray-900"
+              className="mb-2 block text-sm font-medium text-white"
             >
               Username
             </label>
@@ -166,14 +166,14 @@ function Profile({ user, onClose, profileIdToView }) {
               name="username"
               value={formData.username}
               onChange={handleChange}
-              className="w-full rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
             />
           </div>
           <div>
             <label
               htmlFor="email"
-              className="mb-2 block text-sm font-medium text-gray-900"
+              className="mb-2 block text-sm font-medium text-white"
             >
               Email
             </label>
@@ -183,14 +183,14 @@ function Profile({ user, onClose, profileIdToView }) {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
             />
           </div>
           <div>
             <label
               htmlFor="bio"
-              className="mb-2 block text-sm font-medium text-gray-900"
+              className="mb-2 block text-sm font-medium text-white"
             >
               Bio
             </label>
@@ -200,7 +200,7 @@ function Profile({ user, onClose, profileIdToView }) {
               value={formData.bio}
               onChange={handleChange}
               rows={4}
-              className="w-full resize-none rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full resize-none rounded border border-gray-700 bg-gray-800 px-3 py-2 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               placeholder="Tell us about yourself..."
             ></textarea>
           </div>
@@ -208,7 +208,7 @@ function Profile({ user, onClose, profileIdToView }) {
             <button
               type="button"
               onClick={() => setIsEditing(false)}
-              className="flex-1 rounded bg-gray-200 px-4 py-2 font-semibold text-gray-700 hover:bg-gray-300"
+              className="flex-1 rounded bg-gray-700 px-4 py-2 font-semibold text-white hover:bg-gray-600"
             >
               Cancel
             </button>
@@ -224,22 +224,22 @@ function Profile({ user, onClose, profileIdToView }) {
       ) : (
         <div className="space-y-4">
           <div className="mb-6 flex items-center gap-4">
-            <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gray-200 text-5xl font-bold text-gray-600">
+            <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gray-700 text-5xl font-bold text-gray-300">
               <FiUser />
             </div>
             <div>
-              <p className="text-3xl font-bold text-gray-900">
+              <p className="text-3xl font-bold text-white">
                 {profileData.username}
               </p>
-              <p className="text-lg text-gray-600">{profileData.email}</p>
+              <p className="text-lg text-gray-300">{profileData.email}</p>
             </div>
           </div>
 
-          <div className="rounded-lg bg-gray-100 p-4">
-            <h3 className="mb-2 text-lg font-semibold text-gray-900">
+          <div className="rounded-lg bg-gray-800 p-4 border border-gray-700">
+            <h3 className="mb-2 text-lg font-semibold text-white">
               About Me
             </h3>
-            <p className="text-base text-gray-600">
+            <p className="text-base text-gray-300">
               {profileData.bio || "No bio provided yet."}
             </p>
           </div>
@@ -256,7 +256,7 @@ function Profile({ user, onClose, profileIdToView }) {
           )}
 
           <div className="pt-6">
-            <h3 className="mb-4 text-2xl font-bold text-gray-900">
+            <h3 className="mb-4 text-2xl font-bold text-white">
               {isCurrentUserProfile
                 ? "My Projects"
                 : `${profileData.username}'s Projects`}
@@ -267,32 +267,21 @@ function Profile({ user, onClose, profileIdToView }) {
                   <ProjectCard
                     key={project._id}
                     project={project}
-                    onViewProfile={
-                      onClose
-                        ? (userId) => {
-                            // If in modal, close current modal and let parent handle new profile modal
-                            onClose();
-                            // This assumes the parent (Dashboard/ProjectView) has a way to open a new profile modal
-                            // For simplicity, we'll just log here, but in a real app, you'd pass a prop to handle this
-                            console.log(
-                              "Attempting to view profile for:",
-                              userId,
-                            );
-                            // Alternatively, you could directly call openProfileModal from the parent here if it's passed down
-                          }
-                        : undefined
-                    } // Pass undefined if not in a modal context
-                    onDelete={
-                      isCurrentUserProfile
-                        ? handleDeleteProjectFromProfile
-                        : undefined
-                    } // Only allow deletion if current user and their project
+                    onViewProfile={onClose ? (userId) => {
+                      // If in modal, close current modal and let parent handle new profile modal
+                      onClose();
+                      // This assumes the parent (Dashboard/ProjectView) has a way to open a new profile modal
+                      // For simplicity, we'll just log here, but in a real app, you'd pass a prop to handle this
+                      console.log("Attempting to view profile for:", userId);
+                      // Alternatively, you could directly call openProfileModal from the parent here if it's passed down
+                    } : undefined} // Pass undefined if not in a modal context
+                    onDelete={isCurrentUserProfile ? handleDeleteProjectFromProfile : undefined} // Only allow deletion if current user and their project
                     currentUser={user} // Pass current user for conditional delete button
                   />
                 ))}
               </div>
             ) : (
-              <p className="text-gray-600">
+              <p className="text-gray-400">
                 {isCurrentUserProfile
                   ? "You have not added any projects yet."
                   : "This user has no projects yet."}
@@ -305,14 +294,14 @@ function Profile({ user, onClose, profileIdToView }) {
   );
 
   return onClose ? (
-    <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black p-4">
-      <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg bg-white p-6 shadow-lg">
+    <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+      <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg bg-gray-900 p-6 shadow-lg border border-gray-700">
         {ProfileContent}
       </div>
     </div>
   ) : (
     <div className="container mx-auto px-4 py-8">
-      <div className="rounded-lg bg-white p-6 shadow-lg">{ProfileContent}</div>
+      <div className="rounded-lg bg-gray-900 p-6 shadow-lg border border-gray-700">{ProfileContent}</div>
     </div>
   );
 }

@@ -118,7 +118,7 @@ function Dashboard({ user }) {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-black">
         <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
       </div>
     );
@@ -129,29 +129,29 @@ function Dashboard({ user }) {
       {/* Header Section */}
       <div className="mb-8 flex flex-col items-start justify-between md:flex-row md:items-center">
         <div>
-          <h1 className="mb-2 text-4xl font-bold text-gray-900">
+          <h1 className="mb-2 text-4xl font-bold text-white">
             Welcome back, {user?.username}!
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-gray-300">
             Discover amazing projects and share your own work.
           </p>
         </div>
         <div className="mt-4 flex gap-3 md:mt-0">
           <button
             onClick={() => openProfileModal(user?._id)}
-            className="flex items-center gap-2 rounded bg-gray-200 px-4 py-2 font-semibold text-gray-900 hover:bg-gray-300"
+            className="flex items-center gap-2 rounded bg-gray-800 px-4 py-2 font-semibold text-white hover:bg-gray-700 transition-colors"
           >
             <FiUser className="h-5 w-5" /> View Profile
           </button>
           <button
             onClick={() => setShowProjectForm(true)}
-            className="flex items-center gap-2 rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700"
+            className="flex items-center gap-2 rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700 transition-colors"
           >
             <FiPlusCircle className="h-5 w-5" /> Add Project
           </button>
           <button
             onClick={handleDeleteAllProjects}
-            className="flex items-center gap-2 rounded bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700"
+            className="flex items-center gap-2 rounded bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700 transition-colors"
           >
             <FiTrash className="h-5 w-5" /> Delete All My Projects
           </button>
@@ -165,7 +165,7 @@ function Dashboard({ user }) {
 
       {/* Error Message */}
       {error && (
-        <div className="mb-4 rounded-lg border border-red-500 bg-red-100 p-3 text-center text-red-600">
+        <div className="mb-4 rounded-lg border border-red-700 bg-red-900/30 p-3 text-center text-red-400">
           {error}
         </div>
       )}
@@ -184,14 +184,14 @@ function Dashboard({ user }) {
           ))}
         </div>
       ) : (
-        <div className="rounded-lg bg-gray-100 p-8 py-12 text-center">
+        <div className="rounded-lg bg-gray-900/50 p-8 py-12 text-center border border-gray-800">
           <div className="mb-4 text-gray-500">
             <FiSearch className="mx-auto h-16 w-16" />
           </div>
-          <h3 className="mb-2 text-xl font-medium text-gray-900">
+          <h3 className="mb-2 text-xl font-medium text-white">
             No projects found
           </h3>
-          <p className="text-gray-600">
+          <p className="text-gray-400">
             Try adjusting your search or be the first to add a project!
           </p>
         </div>
