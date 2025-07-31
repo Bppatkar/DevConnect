@@ -1,7 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "Crating a DevConnect Project",
+  "description": "Creating a DevConnect Project",
   "main": "server.js",
   "type": "module",
   "scripts": {
@@ -36,3 +36,4 @@
     "nodemon": "^3.1.10"
   }
 }
+
