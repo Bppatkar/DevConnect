@@ -46,4 +46,4 @@ app.listen(PORT, () => {
   console.log(`Health Check Router: http://localhost:${PORT}/api/health`);
 });
 
-export default app;
+export default server;
