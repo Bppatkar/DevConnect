@@ -1,32 +1,29 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FiHeart, FiMessageSquare, FiTrash, FiEdit } from "react-icons/fi"; // Import FiEdit
+import { FiHeart, FiMessageSquare, FiTrash, FiEdit } from "react-icons/fi";
 
-function ProjectCard({ project, onViewProfile, onDelete, currentUser, onEditProject }) { // New prop: onEditProject
-  const { _id, title, description, technologies, owner, likes, comments } =
-    project;
-
+function ProjectCard({ project, onViewProfile, onDelete, currentUser, onEditProject }) {
+  const { _id, title, description, technologies, owner, likes, comments } = project;
   const isOwner = currentUser && owner && currentUser._id === owner._id;
 
   return (
     <div className="flex h-full flex-col rounded-lg border border-gray-800 bg-gray-900 p-6 shadow-lg">
-      {/* Header */}
       <div className="mb-4 flex items-start justify-between">
         <div className="flex-1">
           <h3 className="mb-1 line-clamp-1 text-xl font-semibold text-white">
             {title}
           </h3>
           <button
-            onClick={() => onViewProfile(owner?._id)} // Use optional chaining to avoid errors
+            onClick={() => onViewProfile(owner?._id)}
             className="text-sm font-medium text-gray-400 transition-colors hover:text-blue-400"
           >
             by {owner?.username || "Unknown"}
           </button>
         </div>
-        <div className="flex gap-2"> {/* Container for action buttons */}
-          {isOwner && onEditProject && ( // Show edit button if owner and onEditProject prop is provided
+        <div className="flex gap-2">
+          {isOwner && onEditProject && (
             <button
-              onClick={() => onEditProject(project)} // Pass the entire project object for editing
+              onClick={() => onEditProject(project)}
               className="text-blue-400 transition-colors hover:text-blue-600"
               title="Edit Project"
             >
@@ -35,7 +32,7 @@ function ProjectCard({ project, onViewProfile, onDelete, currentUser, onEditProj
           )}
           {isOwner && (
             <button
-              onClick={() => onDelete(_id)} // Pass project ID to the callback
+              onClick={() => onDelete(_id)}
               className="text-red-400 transition-colors hover:text-red-600"
               title="Delete Project"
             >
@@ -44,13 +41,9 @@ function ProjectCard({ project, onViewProfile, onDelete, currentUser, onEditProj
           )}
         </div>
       </div>
-
-      {/* Description */}
       <p className="mb-4 line-clamp-3 flex-grow text-sm text-gray-300">
         {description}
       </p>
-
-      {/* Technologies */}
       {technologies && technologies.length > 0 && (
         <div className="mb-4 flex flex-wrap gap-2">
           {technologies.slice(0, 3).map((tech, index) => (
@@ -68,8 +61,6 @@ function ProjectCard({ project, onViewProfile, onDelete, currentUser, onEditProj
           )}
         </div>
       )}
-
-      {/* Footer */}
       <div className="mt-auto flex items-center justify-between border-t border-gray-700 pt-4">
         <div className="flex items-center space-x-4 text-sm text-gray-400">
           <span className="flex items-center gap-1">
@@ -81,7 +72,6 @@ function ProjectCard({ project, onViewProfile, onDelete, currentUser, onEditProj
             <span>{comments?.length || 0}</span>
           </span>
         </div>
-
         <Link
           to={`/project/${_id}`}
           className="text-sm font-semibold text-blue-400 transition-colors hover:text-blue-300"

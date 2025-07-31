@@ -10,6 +10,7 @@ function Dashboard({ user }) {
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [showProjectForm, setShowProjectForm] = useState(false);
+  const [projectToEdit, setProjectToEdit] = useState(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [profileIdToView, setProfileIdToView] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,8 +28,7 @@ function Dashboard({ user }) {
         return;
       }
       try {
-        const projectSearchResults =
-          await projectApi.searchProjects(searchQuery);
+        const projectSearchResults = await projectApi.searchProjects(searchQuery);
         const userSearchResults = await userApi.searchUsers(searchQuery);
 
         const uniqueProjects = new Map();
@@ -74,10 +74,20 @@ function Dashboard({ user }) {
     setShowProjectForm(false);
   };
 
-  const handleProjectUpdated = (updatedProject) => { // New: Handler for updated project
-    setProjects(prevProjects => prevProjects.map(p => p._id === updatedProject._id ? updatedProject : p));
-    setFilteredProjects(prevFilteredProjects => prevFilteredProjects.map(p => p._id === updatedProject._id ? updatedProject : p));
+  const handleProjectUpdated = (updatedProject) => {
+    setProjects((prevProjects) =>
+      prevProjects.map((p) => (p._id === updatedProject._id ? updatedProject : p)),
+    );
+    setFilteredProjects((prevFilteredProjects) =>
+      prevFilteredProjects.map((p) => (p._id === updatedProject._id ? updatedProject : p)),
+    );
     setShowProjectForm(false);
+    setProjectToEdit(null);
+  };
+
+  const handleEditProject = (project) => {
+    setProjectToEdit(project);
+    setShowProjectForm(true);
   };
 
   const handleSearch = (query) => {
@@ -91,7 +101,7 @@ function Dashboard({ user }) {
 
   const handleDeleteProject = async (projectId) => {
     try {
-      await projectApi.deleteProject(projectId); // Call API to delete project
+      await projectApi.deleteProject(projectId);
       setProjects((prevProjects) =>
         prevProjects.filter((project) => project._id !== projectId),
       );
@@ -106,15 +116,13 @@ function Dashboard({ user }) {
 
   const handleDeleteAllProjects = async () => {
     try {
-      // Filter projects to only delete those owned by the current user
       const userOwnedProjects = projects.filter(
-        (project) => project.owner._id === user._id
+        (project) => project.owner._id === user._id,
       );
 
       await Promise.all(
         userOwnedProjects.map((project) => projectApi.deleteProject(project._id)),
       );
-      // After successful deletion, refetch projects to update the list
       fetchProjects();
     } catch (err) {
       console.error("Error deleting all projects:", err);
@@ -132,7 +140,6 @@ function Dashboard({ user }) {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Header Section */}
       <div className="mb-8 flex flex-col items-start justify-between md:flex-row md:items-center">
         <div>
           <h1 className="mb-2 text-4xl font-bold text-white">
@@ -150,7 +157,10 @@ function Dashboard({ user }) {
             <FiUser className="h-5 w-5" /> View Profile
           </button>
           <button
-            onClick={() => setShowProjectForm(true)}
+            onClick={() => {
+              setProjectToEdit(null);
+              setShowProjectForm(true);
+            }}
             className="flex items-center gap-2 rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700 transition-colors"
           >
             <FiPlusCircle className="h-5 w-5" /> Add Project
@@ -164,19 +174,16 @@ function Dashboard({ user }) {
         </div>
       </div>
 
-      {/* Search Bar */}
       <div className="mb-8">
         <SearchBar onSearch={handleSearch} />
       </div>
 
-      {/* Error Message */}
       {error && (
         <div className="mb-4 rounded-lg border border-red-700 bg-red-900/30 p-3 text-center text-red-400">
           {error}
         </div>
       )}
 
-      {/* Projects Section */}
       {filteredProjects.length > 0 ? (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredProjects.map((project, index) => (
@@ -185,7 +192,8 @@ function Dashboard({ user }) {
               project={project}
               onViewProfile={openProfileModal}
               onDelete={handleDeleteProject}
-              currentUser={user} // Pass current user to ProjectCard for conditional delete button
+              currentUser={user}
+              onEditProject={handleEditProject}
             />
           ))}
         </div>
@@ -203,16 +211,18 @@ function Dashboard({ user }) {
         </div>
       )}
 
-      {/* Project Form Modal */}
       {showProjectForm && (
         <ProjectForm
-          onClose={() => setShowProjectForm(false)}
+          onClose={() => {
+            setShowProjectForm(false);
+            setProjectToEdit(null);
+          }}
           onProjectAdded={handleProjectAdded}
-          onProjectUpdated={handleProjectUpdated} // Pass handler for updates
+          onProjectUpdated={handleProjectUpdated}
+          projectToEdit={projectToEdit}
         />
       )}
 
-      {/* Profile Modal */}
       {showProfileModal && (
         <Profile
           user={user}

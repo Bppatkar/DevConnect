@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from "react"; // Import useEffect
-import { FiX, FiPlusCircle, FiEdit } from "react-icons/fi"; // Import FiEdit
+import React, { useState, useEffect } from "react";
+import { FiX, FiPlusCircle, FiEdit } from "react-icons/fi";
 import { projectApi } from "../utils/api";
 
-function ProjectForm({ onClose, onProjectAdded, onProjectUpdated, projectToEdit }) { // New prop: projectToEdit
+function ProjectForm({
+  onClose,
+  onProjectAdded,
+  onProjectUpdated,
+  projectToEdit,
+}) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
@@ -12,14 +17,18 @@ function ProjectForm({ onClose, onProjectAdded, onProjectUpdated, projectToEdit 
     technologies: "",
   });
 
-  // Populate form data if a project is being edited
   useEffect(() => {
     if (projectToEdit) {
       setFormData({
         title: projectToEdit.title || "",
         description: projectToEdit.description || "",
-        links: projectToEdit.links && projectToEdit.links.length > 0 ? [...projectToEdit.links] : [""],
-        technologies: projectToEdit.technologies ? projectToEdit.technologies.join(", ") : "",
+        links:
+          projectToEdit.links && projectToEdit.links.length > 0
+            ? [...projectToEdit.links]
+            : [""],
+        technologies: projectToEdit.technologies
+          ? projectToEdit.technologies.join(", ")
+          : "",
       });
     }
   }, [projectToEdit]);
@@ -62,17 +71,20 @@ function ProjectForm({ onClose, onProjectAdded, onProjectUpdated, projectToEdit 
       const projectData = {
         title: formData.title,
         description: formData.description,
-        links: formData.links.filter((link) => link.trim() !== ""), // Filter out empty links
+        links: formData.links.filter((link) => link.trim() !== ""),
         technologies: technologiesArray,
       };
 
       let response;
       if (projectToEdit) {
-        response = await projectApi.updateProject(projectToEdit._id, projectData);
-        onProjectUpdated(response.data.project); // Call update handler
+        response = await projectApi.updateProject(
+          projectToEdit._id,
+          projectData,
+        );
+        onProjectUpdated(response.data.project);
       } else {
         response = await projectApi.createProject(projectData);
-        onProjectAdded(response.data.project); // Call add handler
+        onProjectAdded(response.data.project);
       }
     } catch (err) {
       const errorMessage =
@@ -85,7 +97,7 @@ function ProjectForm({ onClose, onProjectAdded, onProjectUpdated, projectToEdit 
 
   return (
     <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-      <div className="w-full max-w-2xl rounded-lg bg-gray-900 p-6 shadow-lg border border-gray-700">
+      <div className="w-full max-w-2xl rounded-lg border border-gray-700 bg-gray-900 p-6 shadow-lg">
         <div className="p-8">
           {/* Header */}
           <div className="mb-6 flex items-center justify-between">
@@ -218,7 +230,13 @@ function ProjectForm({ onClose, onProjectAdded, onProjectUpdated, projectToEdit 
                 disabled={loading}
                 className="flex-1 rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700 disabled:bg-blue-300"
               >
-                {loading ? (projectToEdit ? "Updating..." : "Creating Project...") : (projectToEdit ? "Update Project" : "Create Project")}
+                {loading
+                  ? projectToEdit
+                    ? "Updating..."
+                    : "Creating Project..."
+                  : projectToEdit
+                    ? "Update Project"
+                    : "Create Project"}
               </button>
             </div>
           </form>

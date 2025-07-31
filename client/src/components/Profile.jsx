@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { FiEdit, FiSave, FiX, FiUser, FiTrash2 } from "react-icons/fi"; // Import FiTrash2 for delete account
+import { FiEdit, FiSave, FiX, FiUser, FiTrash2 } from "react-icons/fi";
 import { userApi, projectApi } from "../utils/api";
 import ProjectCard from "./ProjectCard.jsx";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection after account deletion
+import { useNavigate } from "react-router-dom";
 
 function Profile({ user, onClose, profileIdToView }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -15,8 +15,8 @@ function Profile({ user, onClose, profileIdToView }) {
     bio: "",
   });
   const [userProjects, setUserProjects] = useState([]);
-  const [showConfirmDelete, setShowConfirmDelete] = useState(false); // State for delete confirmation
-  const navigate = useNavigate(); // Initialize navigate
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const navigate = useNavigate();
 
   const isCurrentUserProfile = user && profileIdToView === user._id;
 
@@ -42,8 +42,7 @@ function Profile({ user, onClose, profileIdToView }) {
           bio: response.data.user.bio || "",
         });
 
-        // Fetch projects owned by this user
-        const projectsResponse = await projectApi.getAllProjects(); // Fetch all projects
+        const projectsResponse = await projectApi.getAllProjects();
         const filteredUserProjects = projectsResponse.data.projects.filter(
           (p) => p.owner._id === userIdToFetch,
         );
@@ -78,7 +77,7 @@ function Profile({ user, onClose, profileIdToView }) {
       const response = await userApi.updateProfile(formData);
 
       if (response.status === 200) {
-        setProfileData(response.data.user); // Assuming backend returns { success: true, user: ... }
+        setProfileData(response.data.user);
         setIsEditing(false);
       } else {
         setError(response.data.message || "Failed to update profile");
@@ -98,7 +97,6 @@ function Profile({ user, onClose, profileIdToView }) {
       setUserProjects((prevProjects) =>
         prevProjects.filter((project) => project._id !== projectId),
       );
-      // Optionally, you might want to refresh the main dashboard projects if this modal is open
     } catch (err) {
       console.error("Error deleting project from profile:", err);
       setError("Failed to delete project.");
@@ -109,22 +107,22 @@ function Profile({ user, onClose, profileIdToView }) {
     try {
       setLoading(true);
       await userApi.deleteAccount();
-      localStorage.removeItem("token"); // Clear token
-      onClose(); // Close the modal
-      navigate("/"); // Redirect to home/login page
-      window.location.reload(); // Force a full reload to clear all state
+      localStorage.removeItem("token");
+      onClose();
+      navigate("/");
+      window.location.reload();
     } catch (err) {
       console.error("Error deleting account:", err);
       setError(err.response?.data?.message || "Failed to delete account.");
     } finally {
       setLoading(false);
-      setShowConfirmDelete(false); // Close confirmation modal
+      setShowConfirmDelete(false);
     }
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-8 bg-gray-900">
+      <div className="flex items-center justify-center bg-gray-900 p-8">
         <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
       </div>
     );
@@ -132,7 +130,7 @@ function Profile({ user, onClose, profileIdToView }) {
 
   if (error && !profileData) {
     return (
-      <div className="rounded-lg bg-red-900/30 p-8 text-center text-red-400 border border-red-700">
+      <div className="rounded-lg border border-red-700 bg-red-900/30 p-8 text-center text-red-400">
         <p>{error}</p>
       </div>
     );
@@ -140,7 +138,7 @@ function Profile({ user, onClose, profileIdToView }) {
 
   if (!profileData) {
     return (
-      <div className="p-8 text-center text-gray-400 bg-gray-900 rounded-lg border border-gray-800">
+      <div className="rounded-lg border border-gray-800 bg-gray-900 p-8 text-center text-gray-400">
         <p>Profile not found.</p>
       </div>
     );
@@ -255,17 +253,15 @@ function Profile({ user, onClose, profileIdToView }) {
             </div>
           </div>
 
-          <div className="rounded-lg bg-gray-800 p-4 border border-gray-700">
-            <h3 className="mb-2 text-lg font-semibold text-white">
-              About Me
-            </h3>
+          <div className="rounded-lg border border-gray-700 bg-gray-800 p-4">
+            <h3 className="mb-2 text-lg font-semibold text-white">About Me</h3>
             <p className="text-base text-gray-300">
               {profileData.bio || "No bio provided yet."}
             </p>
           </div>
 
           {isCurrentUserProfile && (
-            <div className="pt-4 flex flex-col gap-3">
+            <div className="flex flex-col gap-3 pt-4">
               <button
                 onClick={() => setIsEditing(true)}
                 className="w-full rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700"
@@ -273,8 +269,8 @@ function Profile({ user, onClose, profileIdToView }) {
                 Edit Profile
               </button>
               <button
-                onClick={() => setShowConfirmDelete(true)} // Open confirmation modal
-                className="w-full rounded bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700 flex items-center justify-center gap-2"
+                onClick={() => setShowConfirmDelete(true)}
+                className="flex w-full items-center justify-center gap-2 rounded bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700"
               >
                 <FiTrash2 className="h-5 w-5" /> Delete Account
               </button>
@@ -293,16 +289,24 @@ function Profile({ user, onClose, profileIdToView }) {
                   <ProjectCard
                     key={project._id}
                     project={project}
-                    onViewProfile={onClose ? (userId) => {
-                      // If in modal, close current modal and let parent handle new profile modal
-                      onClose();
-                      // This assumes the parent (Dashboard/ProjectView) has a way to open a new profile modal
-                      // For simplicity, we'll just log here, but in a real app, you'd pass a prop to handle this
-                      console.log("Attempting to view profile for:", userId);
-                      // Alternatively, you could directly call openProfileModal from the parent here if it's passed down
-                    } : undefined} // Pass undefined if not in a modal context
-                    onDelete={isCurrentUserProfile ? handleDeleteProjectFromProfile : undefined} // Only allow deletion if current user and their project
-                    currentUser={user} // Pass current user for conditional delete button
+                    onViewProfile={
+                      onClose
+                        ? (userId) => {
+                            onClose();
+
+                            console.log(
+                              "Attempting to view profile for:",
+                              userId,
+                            );
+                          }
+                        : undefined
+                    }
+                    onDelete={
+                      isCurrentUserProfile
+                        ? handleDeleteProjectFromProfile
+                        : undefined
+                    }
+                    currentUser={user}
                   />
                 ))}
               </div>
@@ -320,19 +324,24 @@ function Profile({ user, onClose, profileIdToView }) {
       {/* Delete Confirmation Modal */}
       {showConfirmDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="rounded-lg bg-gray-900 p-8 shadow-lg border border-gray-700 max-w-sm text-center">
-            <h3 className="text-xl font-bold text-white mb-4">Confirm Account Deletion</h3>
-            <p className="text-gray-300 mb-6">Are you sure you want to delete your account? This action cannot be undone and will delete all your projects.</p>
+          <div className="max-w-sm rounded-lg border border-gray-700 bg-gray-900 p-8 text-center shadow-lg">
+            <h3 className="mb-4 text-xl font-bold text-white">
+              Confirm Account Deletion
+            </h3>
+            <p className="mb-6 text-gray-300">
+              Are you sure you want to delete your account? This action cannot
+              be undone and will delete all your projects.
+            </p>
             <div className="flex justify-center gap-4">
               <button
                 onClick={() => setShowConfirmDelete(false)}
-                className="rounded bg-gray-700 px-5 py-2 font-semibold text-white hover:bg-gray-600 transition-colors"
+                className="rounded bg-gray-700 px-5 py-2 font-semibold text-white transition-colors hover:bg-gray-600"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteAccount}
-                className="rounded bg-red-600 px-5 py-2 font-semibold text-white hover:bg-red-700 transition-colors"
+                className="rounded bg-red-600 px-5 py-2 font-semibold text-white transition-colors hover:bg-red-700"
                 disabled={loading}
               >
                 {loading ? "Deleting..." : "Delete My Account"}
@@ -346,13 +355,15 @@ function Profile({ user, onClose, profileIdToView }) {
 
   return onClose ? (
     <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-      <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg bg-gray-900 p-6 shadow-lg border border-gray-700">
+      <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg border border-gray-700 bg-gray-900 p-6 shadow-lg">
         {ProfileContent}
       </div>
     </div>
   ) : (
     <div className="container mx-auto px-4 py-8">
-      <div className="rounded-lg bg-gray-900 p-6 shadow-lg border border-gray-700">{ProfileContent}</div>
+      <div className="rounded-lg border border-gray-700 bg-gray-900 p-6 shadow-lg">
+        {ProfileContent}
+      </div>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { userApi } from "../utils/api";
 import { FiUser, FiSearch } from "react-icons/fi";
-import Profile from "../components/Profile"; // Import Profile component
+import Profile from "../components/Profile"; 
 
 function UserList({ user }) {
   const [users, setUsers] = useState([]);
@@ -95,7 +95,7 @@ function UserList({ user }) {
       {/* Profile Modal */}
       {showProfileModal && (
         <Profile
-          user={user} // Pass current authenticated user to Profile
+          user={user} 
           onClose={() => setShowProfileModal(false)}
           profileIdToView={profileIdToView}
         />

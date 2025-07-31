@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
+import { useParams, useNavigate } from "react-router-dom"; 
 import { projectApi } from "../utils/api";
 import {
   FiHeart,
@@ -7,15 +7,15 @@ import {
   FiGithub,
   FiExternalLink,
   FiUser,
-  FiArrowLeft, // Import the back arrow icon
-  FiEdit, // Import FiEdit for project editing
+  FiArrowLeft, 
+  FiEdit, 
 } from "react-icons/fi";
 import Profile from "../components/Profile";
-import ProjectForm from "../components/ProjectForm"; // Import ProjectForm
+import ProjectForm from "../components/ProjectForm"; 
 
 function ProjectView({ user }) {
   const { id } = useParams();
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate(); 
   const [project, setProject] = useState(null);
   const [newCommentText, setNewCommentText] = useState("");
   const [loading, setLoading] = useState(true);
@@ -23,7 +23,7 @@ function ProjectView({ user }) {
   const [error, setError] = useState("");
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [profileIdToView, setProfileIdToView] = useState(null);
-  const [showEditProjectForm, setShowEditProjectForm] = useState(false); // New state for edit form
+  const [showEditProjectForm, setShowEditProjectForm] = useState(false); 
 
   const fetchProjectDetails = async () => {
     setLoading(true);
@@ -88,8 +88,8 @@ function ProjectView({ user }) {
   };
 
   const handleProjectUpdated = (updatedProject) => {
-    setProject(updatedProject); // Update the project state with the new data
-    setShowEditProjectForm(false); // Close the edit form
+    setProject(updatedProject); 
+    setShowEditProjectForm(false); 
   };
 
   if (loading) {
@@ -125,7 +125,7 @@ function ProjectView({ user }) {
         <div className="mb-6 flex flex-col items-start justify-between border-b border-gray-700 pb-4 md:flex-row md:items-center">
           <div className="flex items-center gap-4 mb-4 md:mb-0">
             <button
-              onClick={() => navigate(-1)} // Navigates back one step in history
+              onClick={() => navigate(-1)}
               className="flex items-center gap-2 text-blue-400 hover:text-blue-300 font-medium transition-colors"
               title="Go back"
             >
@@ -302,8 +302,8 @@ function ProjectView({ user }) {
       {showEditProjectForm && (
         <ProjectForm
           onClose={() => setShowEditProjectForm(false)}
-          projectToEdit={project} // Pass the current project for editing
-          onProjectUpdated={handleProjectUpdated} // Pass the update handler
+          projectToEdit={project} 
+          onProjectUpdated={handleProjectUpdated} 
         />
       )}
     </div>

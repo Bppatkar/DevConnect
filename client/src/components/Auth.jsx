@@ -60,7 +60,7 @@ function Auth({ onLogin, buttonGradientStyle }) {
           className={`rounded-t-lg px-6 py-3 text-lg font-semibold transition-colors ${
             isLogin ? "text-white" : "bg-gray-700 text-gray-300"
           }`}
-          style={isLogin ? buttonGradientStyle : {}} // Apply gradient if active
+          style={isLogin ? buttonGradientStyle : {}} 
           onClick={() => setIsLogin(true)}
         >
           Login
@@ -69,7 +69,7 @@ function Auth({ onLogin, buttonGradientStyle }) {
           className={`rounded-t-lg px-6 py-3 text-lg font-semibold transition-colors ${
             !isLogin ? "text-white" : "bg-gray-700 text-gray-300"
           }`}
-          style={!isLogin ? buttonGradientStyle : {}} // Apply gradient if active
+          style={!isLogin ? buttonGradientStyle : {}} 
           onClick={() => setIsLogin(false)}
         >
           Sign Up

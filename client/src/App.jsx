@@ -59,7 +59,6 @@ function App() {
 
   return (
     <Router>
-      {/* The main container for the application, ensuring a consistent dark background */}
       <div className="min-h-screen bg-black text-white font-sans">
         {user && (
           <Navbar

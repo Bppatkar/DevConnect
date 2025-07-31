@@ -13,16 +13,14 @@ const textGradientStyle = {
   WebkitTextFillColor: 'transparent',
 };
 
-// Style for buttons using the same gradient
 const buttonGradientStyle = {
   background: `linear-gradient(to right, ${gradientColors.start}, ${gradientColors.middle}, ${gradientColors.end})`,
-  border: 'none', // Remove default border if any
+  border: 'none', 
 };
 
 
 function Home({ onLogin }) {
   return (
-    // Ensure this outermost div covers the entire viewport with a pure black background
     <div className="flex min-h-screen w-full flex-col items-center justify-center bg-black p-4">
       <div className="container mx-auto max-w-6xl py-8">
         {/* Header Section */}
