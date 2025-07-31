@@ -1,47 +1,53 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { FiHeart, FiMessageSquare } from 'react-icons/fi'; 
+import React from "react";
+import { Link } from "react-router-dom";
+import { FiHeart, FiMessageSquare, FiTrash } from "react-icons/fi";
 
-function ProjectCard({ project }) {
-  const { _id, title, description, technologies, owner, likes, comments } = project;
+function ProjectCard({ project, onViewProfile, onDelete }) {
+  const { _id, title, description, technologies, owner, likes, comments } =
+    project;
 
   return (
-    <div className="card p-6 bg-background-DEFAULT border border-light-background flex flex-col h-full">
+    <div className="flex h-full flex-col rounded-lg border border-gray-200 bg-white p-6 shadow-md">
       {/* Header */}
-      <div className="flex items-start justify-between mb-4">
+      <div className="mb-4 flex items-start justify-between">
         <div className="flex-1">
-          <h3 className="text-xl font-semibold text-text-primary mb-1 line-clamp-1">
+          <h3 className="mb-1 line-clamp-1 text-xl font-semibold text-gray-900">
             {title}
           </h3>
-          {/* Link to owner's profile - this will trigger the Profile modal in Dashboard */}
           <button
-            // This button will trigger a modal or state change in Dashboard to show profile
-            onClick={() => console.log(`View profile of ${owner.username}`)} // Placeholder for now
-            className="text-text-secondary hover:text-primary text-sm font-medium transition-colors"
+            onClick={() => onViewProfile(owner._id)} // Pass owner ID to the callback
+            className="text-sm font-medium text-gray-600 transition-colors hover:text-blue-600"
           >
             by {owner.username}
           </button>
         </div>
+        <button
+          onClick={() => onDelete(_id)} // Pass project ID to the callback
+          className="text-red-600 transition-colors hover:text-red-800"
+          title="Delete Project"
+        >
+          <FiTrash className="h-5 w-5" />
+        </button>
       </div>
 
       {/* Description */}
-      <p className="text-text-secondary text-sm mb-4 line-clamp-3 flex-grow">
+      <p className="mb-4 line-clamp-3 flex-grow text-sm text-gray-600">
         {description}
       </p>
 
       {/* Technologies */}
       {technologies && technologies.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-4">
+        <div className="mb-4 flex flex-wrap gap-2">
           {technologies.slice(0, 3).map((tech, index) => (
             <span
               key={index}
-              className="bg-accent-teal/10 text-accent-teal text-xs px-3 py-1 rounded-full font-medium"
+              className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-600"
             >
               {tech}
             </span>
           ))}
           {technologies.length > 3 && (
-            <span className="text-xs text-text-light">
+            <span className="text-xs text-gray-500">
               +{technologies.length - 3} more
             </span>
           )}
@@ -49,21 +55,21 @@ function ProjectCard({ project }) {
       )}
 
       {/* Footer */}
-      <div className="flex items-center justify-between mt-auto pt-4 border-t border-light-background">
-        <div className="flex items-center space-x-4 text-sm text-text-secondary">
+      <div className="mt-auto flex items-center justify-between border-t border-gray-200 pt-4">
+        <div className="flex items-center space-x-4 text-sm text-gray-600">
           <span className="flex items-center gap-1">
-            <FiHeart className="w-4 h-4 text-danger" /> {/* Heart icon */}
+            <FiHeart className="h-4 w-4 text-red-500" />
             <span>{likes?.length || 0}</span>
           </span>
           <span className="flex items-center gap-1">
-            <FiMessageSquare className="w-4 h-4 text-primary" /> {/* Message icon */}
+            <FiMessageSquare className="h-4 w-4 text-blue-500" />
             <span>{comments?.length || 0}</span>
           </span>
         </div>
 
         <Link
           to={`/project/${_id}`}
-          className="text-primary hover:text-primary-dark text-sm font-semibold transition-colors"
+          className="text-sm font-semibold text-blue-600 transition-colors hover:text-blue-800"
         >
           View Details →
         </Link>

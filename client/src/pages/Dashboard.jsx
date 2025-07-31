@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import ProjectCard from '../components/ProjectCard';
-import ProjectForm from '../components/ProjectForm';
-import SearchBar from '../components/SearchBar';
-import Profile from '../components/Profile';
-import { projectApi, userApi } from '../utils/api';
-import { FiPlusCircle, FiUser, FiSearch } from 'react-icons/fi';
+import React, { useState, useEffect } from "react";
+import ProjectCard from "../components/ProjectCard.jsx";
+import ProjectForm from "../components/ProjectForm";
+import SearchBar from "../components/SearchBar";
+import Profile from "../components/Profile";
+import { projectApi, userApi } from "../utils/api";
+import { FiPlusCircle, FiUser, FiSearch, FiTrash } from "react-icons/fi";
 
 function Dashboard({ user }) {
   const [projects, setProjects] = useState([]);
@@ -13,8 +13,8 @@ function Dashboard({ user }) {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [profileIdToView, setProfileIdToView] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     fetchProjects();
@@ -27,19 +27,17 @@ function Dashboard({ user }) {
         return;
       }
       try {
-        const projectSearchResults = await projectApi.searchProjects(
-          searchQuery
-        );
+        const projectSearchResults =
+          await projectApi.searchProjects(searchQuery);
         const userSearchResults = await userApi.searchUsers(searchQuery);
 
         const uniqueProjects = new Map();
 
         projectSearchResults.data.projects.forEach((p) =>
-          uniqueProjects.set(p._id, p)
-        ); // Access .projects
+          uniqueProjects.set(p._id, p),
+        );
 
         for (const foundUser of userSearchResults.data.users) {
-          // Access .users
           projects
             .filter((p) => p.owner._id === foundUser._id)
             .forEach((p) => uniqueProjects.set(p._id, p));
@@ -47,8 +45,8 @@ function Dashboard({ user }) {
 
         setFilteredProjects(Array.from(uniqueProjects.values()));
       } catch (err) {
-        console.error('Error during search:', err);
-        setError('Failed to perform search.');
+        console.error("Error during search:", err);
+        setError("Failed to perform search.");
         setFilteredProjects([]);
       }
     };
@@ -58,15 +56,14 @@ function Dashboard({ user }) {
 
   const fetchProjects = async () => {
     setLoading(true);
-    setError('');
+    setError("");
     try {
       const response = await projectApi.getAllProjects();
-      // FIX HERE: Access response.data.projects
       setProjects(response.data.projects);
       setFilteredProjects(response.data.projects);
     } catch (err) {
-      setError('Failed to fetch projects. Please try again later.');
-      console.error('Error fetching projects:', err);
+      setError("Failed to fetch projects. Please try again later.");
+      console.error("Error fetching projects:", err);
     } finally {
       setLoading(false);
     }
@@ -86,75 +83,115 @@ function Dashboard({ user }) {
     setShowProfileModal(true);
   };
 
+  const handleDeleteProject = async (projectId) => {
+    try {
+      await projectApi.deleteProject(projectId); // Call API to delete project
+      setProjects((prevProjects) =>
+        prevProjects.filter((project) => project._id !== projectId),
+      );
+      setFilteredProjects((prevFilteredProjects) =>
+        prevFilteredProjects.filter((project) => project._id !== projectId),
+      );
+    } catch (err) {
+      console.error("Error deleting project:", err);
+      setError("Failed to delete project.");
+    }
+  };
+
+  const handleDeleteAllProjects = async () => {
+    try {
+      await Promise.all(
+        projects.map((project) => projectApi.deleteProject(project._id)),
+      ); // Delete all projects
+      setProjects([]);
+      setFilteredProjects([]);
+    } catch (err) {
+      console.error("Error deleting all projects:", err);
+      setError("Failed to delete all projects.");
+    }
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-primary"></div>
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
       </div>
     );
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+      {/* Header Section */}
+      <div className="mb-8 flex flex-col items-start justify-between md:flex-row md:items-center">
         <div>
-          <h1 className="text-4xl font-bold text-text-primary mb-2">
+          <h1 className="mb-2 text-4xl font-bold text-gray-900">
             Welcome back, {user?.username}!
           </h1>
-          <p className="text-text-secondary text-lg">
+          <p className="text-lg text-gray-600">
             Discover amazing projects and share your own work.
           </p>
         </div>
-        <div className="flex gap-3 mt-4 md:mt-0">
+        <div className="mt-4 flex gap-3 md:mt-0">
           <button
             onClick={() => openProfileModal(user?._id)}
-            className="btn bg-light-background text-text-primary hover:bg-gray-300"
+            className="flex items-center gap-2 rounded bg-gray-200 px-4 py-2 font-semibold text-gray-900 hover:bg-gray-300"
           >
-            <FiUser /> View Profile
+            <FiUser className="h-5 w-5" /> View Profile
           </button>
           <button
             onClick={() => setShowProjectForm(true)}
-            className="btn btn-primary"
+            className="flex items-center gap-2 rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700"
           >
-            <FiPlusCircle /> Add Project
+            <FiPlusCircle className="h-5 w-5" /> Add Project
+          </button>
+          <button
+            onClick={handleDeleteAllProjects}
+            className="flex items-center gap-2 rounded bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700"
+          >
+            <FiTrash className="h-5 w-5" /> Delete All Projects
           </button>
         </div>
       </div>
 
+      {/* Search Bar */}
       <div className="mb-8">
         <SearchBar onSearch={handleSearch} />
       </div>
 
+      {/* Error Message */}
       {error && (
-        <div className="text-danger text-center bg-danger/10 p-3 rounded-lg border border-danger mb-4">
+        <div className="mb-4 rounded-lg border border-red-500 bg-red-100 p-3 text-center text-red-600">
           {error}
         </div>
       )}
 
+      {/* Projects Section */}
       {filteredProjects.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredProjects.map((project) => (
             <ProjectCard
               key={project._id}
               project={project}
-              onViewProfile={() => openProfileModal(project.owner._id)}
+              onViewProfile={openProfileModal}
+              onDelete={handleDeleteProject}
             />
           ))}
         </div>
       ) : (
-        <div className="text-center py-12 bg-light-background rounded-lg p-8">
-          <div className="text-text-light mb-4">
-            <FiSearch className="w-16 h-16 mx-auto" />
+        <div className="rounded-lg bg-gray-100 p-8 py-12 text-center">
+          <div className="mb-4 text-gray-500">
+            <FiSearch className="mx-auto h-16 w-16" />
           </div>
-          <h3 className="text-xl font-medium text-text-primary mb-2">
+          <h3 className="mb-2 text-xl font-medium text-gray-900">
             No projects found
           </h3>
-          <p className="text-text-secondary">
+          <p className="text-gray-600">
             Try adjusting your search or be the first to add a project!
           </p>
         </div>
       )}
 
+      {/* Project Form Modal */}
       {showProjectForm && (
         <ProjectForm
           onClose={() => setShowProjectForm(false)}
@@ -162,6 +199,7 @@ function Dashboard({ user }) {
         />
       )}
 
+      {/* Profile Modal */}
       {showProfileModal && (
         <Profile
           user={user}

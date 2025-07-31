@@ -1,33 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { FiEdit, FiSave, FiX, FiUser } from 'react-icons/fi';
-import { userApi, projectApi } from '../utils/api';
-import ProjectCard from './ProjectCard';
+import React, { useState, useEffect } from "react";
+import { FiEdit, FiSave, FiX, FiUser } from "react-icons/fi";
+import { userApi, projectApi } from "../utils/api";
+import ProjectCard from "./ProjectCard.jsx";
 
 function Profile({ user, onClose, profileIdToView }) {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [profileData, setProfileData] = useState(null);
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    bio: '',
+    username: "",
+    email: "",
+    bio: "",
   });
   const [userProjects, setUserProjects] = useState([]);
 
-  // isCurrentUserProfile should use the user prop directly
   const isCurrentUserProfile = user && profileIdToView === user._id;
 
   useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true);
-      setError('');
+      setError("");
 
-      // Ensure user._id is available if profileIdToView is not explicitly set
-      const userIdToFetch = profileIdToView || (user ? user._id : null); // <-- More robust check
+      const userIdToFetch = profileIdToView || (user ? user._id : null);
 
       if (!userIdToFetch) {
-        setError('User ID not provided to fetch profile.');
+        setError("User ID not provided to fetch profile.");
         setLoading(false);
         return;
       }
@@ -38,21 +36,20 @@ function Profile({ user, onClose, profileIdToView }) {
         setFormData({
           username: response.data.user.username,
           email: response.data.user.email,
-          bio: response.data.user.bio || '',
+          bio: response.data.user.bio || "",
         });
 
-        // Fetch projects for this user
         const projectsResponse = await projectApi.searchProjects(
-          response.data.user.username
+          response.data.user.username,
         );
         setUserProjects(
           projectsResponse.data.projects.filter(
-            (p) => p.owner._id === userIdToFetch
-          )
+            (p) => p.owner._id === userIdToFetch,
+          ),
         );
       } catch (err) {
         const errorMessage =
-          err.response?.data?.message || 'Failed to fetch profile.';
+          err.response?.data?.message || "Failed to fetch profile.";
         setError(errorMessage);
         setProfileData(null);
       } finally {
@@ -68,33 +65,26 @@ function Profile({ user, onClose, profileIdToView }) {
       ...formData,
       [e.target.name]: e.target.value,
     });
-    setError('');
+    setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
-      // userApi.updateProfile explicitly handles token
       const response = await userApi.updateProfile(formData);
 
       if (response.status === 200) {
-        setProfileData(response.data); // Update displayed profile with new data
-        setIsEditing(false); // Exit edit mode
-        // If this profile is the current user's, update the App.jsx user state
-        if (isCurrentUserProfile) {
-          // You might need a prop to update the user in App.jsx if it's not the same object
-          // For simplicity, we'll just re-fetch in App.jsx's useEffect if needed
-        }
-        if (onClose) onClose(); // Close modal if it's a modal
+        setProfileData(response.data);
+        setIsEditing(false);
       } else {
-        setError(response.data.message || 'Failed to update profile');
+        setError(response.data.message || "Failed to update profile");
       }
     } catch (err) {
       const errorMessage =
-        err.response?.data?.message || 'Network error. Please try again.';
+        err.response?.data?.message || "Network error. Please try again.";
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -104,14 +94,14 @@ function Profile({ user, onClose, profileIdToView }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-4 border-primary"></div>
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
       </div>
     );
   }
 
   if (error && !profileData) {
     return (
-      <div className="text-center p-8 text-danger bg-danger/10 rounded-lg">
+      <div className="rounded-lg bg-red-100 p-8 text-center text-red-600">
         <p>{error}</p>
       </div>
     );
@@ -119,7 +109,7 @@ function Profile({ user, onClose, profileIdToView }) {
 
   if (!profileData) {
     return (
-      <div className="text-center p-8 text-text-secondary">
+      <div className="p-8 text-center text-gray-600">
         <p>Profile not found.</p>
       </div>
     );
@@ -128,24 +118,24 @@ function Profile({ user, onClose, profileIdToView }) {
   const ProfileContent = (
     <div className="p-8">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-text-primary">
+      <div className="mb-6 flex items-center justify-between">
+        <h2 className="text-3xl font-bold text-gray-900">
           {isCurrentUserProfile
-            ? 'My Profile'
+            ? "My Profile"
             : `${profileData.username}'s Profile`}
         </h2>
-        {onClose && ( // Show close button only if in a modal
+        {onClose && (
           <button
             onClick={onClose}
-            className="text-text-secondary hover:text-primary transition-colors"
+            className="text-gray-600 transition-colors hover:text-blue-600"
           >
-            <FiX className="w-8 h-8" />
+            <FiX className="h-8 w-8" />
           </button>
         )}
       </div>
 
       {error && (
-        <div className="text-danger text-sm bg-danger/10 p-3 rounded-lg border border-danger mb-4">
+        <div className="mb-4 rounded-lg border border-red-500 bg-red-100 p-3 text-sm text-red-600">
           {error}
         </div>
       )}
@@ -155,7 +145,7 @@ function Profile({ user, onClose, profileIdToView }) {
           <div>
             <label
               htmlFor="username"
-              className="block text-sm font-medium text-text-primary mb-2"
+              className="mb-2 block text-sm font-medium text-gray-900"
             >
               Username
             </label>
@@ -165,14 +155,14 @@ function Profile({ user, onClose, profileIdToView }) {
               name="username"
               value={formData.username}
               onChange={handleChange}
-              className="form-input"
+              className="w-full rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
             />
           </div>
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-text-primary mb-2"
+              className="mb-2 block text-sm font-medium text-gray-900"
             >
               Email
             </label>
@@ -182,14 +172,14 @@ function Profile({ user, onClose, profileIdToView }) {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="form-input"
+              className="w-full rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
             />
           </div>
           <div>
             <label
               htmlFor="bio"
-              className="block text-sm font-medium text-text-primary mb-2"
+              className="mb-2 block text-sm font-medium text-gray-900"
             >
               Bio
             </label>
@@ -199,7 +189,7 @@ function Profile({ user, onClose, profileIdToView }) {
               value={formData.bio}
               onChange={handleChange}
               rows={4}
-              className="form-input resize-none"
+              className="w-full resize-none rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               placeholder="Tell us about yourself..."
             ></textarea>
           </div>
@@ -207,45 +197,39 @@ function Profile({ user, onClose, profileIdToView }) {
             <button
               type="button"
               onClick={() => setIsEditing(false)}
-              className="btn bg-light-background text-text-primary hover:bg-gray-300 flex-1"
+              className="flex-1 rounded bg-gray-200 px-4 py-2 font-semibold text-gray-700 hover:bg-gray-300"
             >
-              <FiX /> Cancel
+              Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="btn btn-primary flex-1"
+              className="flex-1 rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700 disabled:bg-blue-300"
             >
-              {loading ? (
-                'Saving...'
-              ) : (
-                <>
-                  <FiSave /> Save Changes
-                </>
-              )}
+              {loading ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </form>
       ) : (
         <div className="space-y-4">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-24 h-24 bg-light-background rounded-full flex items-center justify-center text-text-secondary text-5xl font-bold">
-              <FiUser /> {/* Placeholder for profile picture */}
+          <div className="mb-6 flex items-center gap-4">
+            <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gray-200 text-5xl font-bold text-gray-600">
+              <FiUser />
             </div>
             <div>
-              <p className="text-3xl font-bold text-text-primary">
+              <p className="text-3xl font-bold text-gray-900">
                 {profileData.username}
               </p>
-              <p className="text-lg text-text-secondary">{profileData.email}</p>
+              <p className="text-lg text-gray-600">{profileData.email}</p>
             </div>
           </div>
 
-          <div className="bg-light-background p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-text-primary mb-2">
+          <div className="rounded-lg bg-gray-100 p-4">
+            <h3 className="mb-2 text-lg font-semibold text-gray-900">
               About Me
             </h3>
-            <p className="text-text-secondary text-base whitespace-pre-wrap">
-              {profileData.bio || 'No bio provided yet.'}
+            <p className="text-base text-gray-600">
+              {profileData.bio || "No bio provided yet."}
             </p>
           </div>
 
@@ -253,30 +237,30 @@ function Profile({ user, onClose, profileIdToView }) {
             <div className="pt-4">
               <button
                 onClick={() => setIsEditing(true)}
-                className="btn btn-primary w-full"
+                className="w-full rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700"
               >
-                <FiEdit /> Edit Profile
+                Edit Profile
               </button>
             </div>
           )}
 
           <div className="pt-6">
-            <h3 className="text-2xl font-bold text-text-primary mb-4">
+            <h3 className="mb-4 text-2xl font-bold text-gray-900">
               {isCurrentUserProfile
-                ? 'My Projects'
+                ? "My Projects"
                 : `${profileData.username}'s Projects`}
             </h3>
             {userProjects.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 {userProjects.map((project) => (
                   <ProjectCard key={project._id} project={project} />
                 ))}
               </div>
             ) : (
-              <p className="text-text-secondary">
+              <p className="text-gray-600">
                 {isCurrentUserProfile
-                  ? 'You have not added any projects yet.'
-                  : 'This user has no projects yet.'}
+                  ? "You have not added any projects yet."
+                  : "This user has no projects yet."}
               </p>
             )}
           </div>
@@ -285,16 +269,15 @@ function Profile({ user, onClose, profileIdToView }) {
     </div>
   );
 
-  // Render as a modal if onClose is provided, otherwise render directly
   return onClose ? (
-    <div className="fixed inset-0 bg-dark-primary bg-opacity-70 flex items-center justify-center p-4 z-50">
-      <div className="card max-w-3xl w-full max-h-[90vh] overflow-y-auto bg-background-DEFAULT">
+    <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black p-4">
+      <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg bg-white p-6 shadow-lg">
         {ProfileContent}
       </div>
     </div>
   ) : (
     <div className="container mx-auto px-4 py-8">
-      <div className="card bg-background-DEFAULT">{ProfileContent}</div>
+      <div className="rounded-lg bg-white p-6 shadow-lg">{ProfileContent}</div>
     </div>
   );
 }

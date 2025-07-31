@@ -8,7 +8,7 @@ DevConnect/
 │   ├── src/
 │   │   ├── components/         # UI components
 │   │   │   ├── Auth.jsx        # Login & Signup combined
-│   │   │   ├── ProjectCard.jsx # Project display
+│   │   │   ├── Projectbg-white rounded-lg shadow-md p-6.jsx # Project display
 │   │   │   ├── ProjectForm.jsx # Add/Edit project
 │   │   │   ├── Profile.jsx     # User profile
 │   │   │   ├── Navbar.jsx      # Navigation

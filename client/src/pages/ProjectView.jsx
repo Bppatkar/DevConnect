@@ -1,28 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { projectApi } from '../utils/api';
-import { FiHeart, FiMessageSquare, FiGithub, FiExternalLink, FiUser } from 'react-icons/fi';
-import Profile from '../components/Profile';
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { projectApi } from "../utils/api";
+import {
+  FiHeart,
+  FiMessageSquare,
+  FiGithub,
+  FiExternalLink,
+  FiUser,
+} from "react-icons/fi";
+import Profile from "../components/Profile";
 
 function ProjectView({ user }) {
   const { id } = useParams();
   const [project, setProject] = useState(null);
-  const [newCommentText, setNewCommentText] = useState('');
+  const [newCommentText, setNewCommentText] = useState("");
   const [loading, setLoading] = useState(true);
   const [commentLoading, setCommentLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [profileIdToView, setProfileIdToView] = useState(null);
 
   const fetchProjectDetails = async () => {
     setLoading(true);
-    setError('');
+    setError("");
     try {
       const response = await projectApi.getProjectById(id);
-      setProject(response.data.project); // Access .project property
+      setProject(response.data.project);
     } catch (err) {
-      setError(err.response?.data?.message || 'Error fetching project details.');
-      console.error('Error fetching project:', err);
+      setError(
+        err.response?.data?.message || "Error fetching project details.",
+      );
+      console.error("Error fetching project:", err);
     } finally {
       setLoading(false);
     }
@@ -35,37 +43,37 @@ function ProjectView({ user }) {
   const handleAddComment = async (e) => {
     e.preventDefault();
     if (!newCommentText.trim()) {
-      setError('Comment cannot be empty.');
+      setError("Comment cannot be empty.");
       return;
     }
     setCommentLoading(true);
-    setError('');
+    setError("");
 
     try {
-      const response = await projectApi.addComment(id, { text: newCommentText });
-      // Assuming backend returns updated project or just the new comments
-      // If it returns the new comments, you'll need to update the project state
-      setProject(prevProject => ({
+      const response = await projectApi.addComment(id, {
+        text: newCommentText,
+      });
+      setProject((prevProject) => ({
         ...prevProject,
-        comments: response.data.comments // Update comments with the new populated array
+        comments: response.data.comments,
       }));
-      setNewCommentText('');
+      setNewCommentText("");
     } catch (err) {
-      setError(err.response?.data?.message || 'Error adding comment.');
-      console.error('Error adding comment:', err);
+      setError(err.response?.data?.message || "Error adding comment.");
+      console.error("Error adding comment:", err);
     } finally {
       setCommentLoading(false);
     }
   };
 
   const handleToggleLike = async () => {
-    setError('');
+    setError("");
     try {
       const response = await projectApi.toggleLike(id);
-      setProject(response.data.project); // Update project with new likes data
+      setProject(response.data.project);
     } catch (err) {
-      setError(err.response?.data?.message || 'Error toggling like.');
-      console.error('Error toggling like:', err);
+      setError(err.response?.data?.message || "Error toggling like.");
+      console.error("Error toggling like:", err);
     }
   };
 
@@ -74,18 +82,17 @@ function ProjectView({ user }) {
     setShowProfileModal(true);
   };
 
-
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-primary"></div>
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
       </div>
     );
   }
 
   if (error && !project) {
     return (
-      <div className="text-center p-8 text-danger bg-danger/10 rounded-lg">
+      <div className="rounded-lg bg-red-100 p-8 text-center text-red-600">
         <p>{error}</p>
       </div>
     );
@@ -93,7 +100,7 @@ function ProjectView({ user }) {
 
   if (!project) {
     return (
-      <div className="text-center p-8 text-text-secondary">
+      <div className="p-8 text-center text-gray-600">
         <p>Project not found.</p>
       </div>
     );
@@ -101,52 +108,59 @@ function ProjectView({ user }) {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="card p-8 bg-background-DEFAULT">
+      <div className="rounded-lg bg-white p-8 shadow-md">
         {/* Project Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b pb-4 border-light-background">
+        <div className="mb-6 flex flex-col items-start justify-between border-b pb-4 md:flex-row md:items-center">
           <div className="flex-1">
-            <h1 className="text-4xl font-bold text-text-primary mb-2">
+            <h1 className="mb-2 text-4xl font-bold text-gray-900">
               {project.title}
             </h1>
             <button
               onClick={() => openProfileModal(project.owner._id)}
-              className="text-primary hover:text-primary-dark text-lg font-medium flex items-center gap-2"
+              className="flex items-center gap-2 text-lg font-medium text-blue-600 hover:text-blue-800"
             >
-              <FiUser className="w-5 h-5" /> {project.owner?.username} {/* Defensive check here */}
+              <FiUser className="h-5 w-5" /> {project.owner?.username}
             </button>
           </div>
-          <div className="flex items-center gap-4 mt-4 md:mt-0">
+          <div className="mt-4 flex items-center gap-4 md:mt-0">
             <button
               onClick={handleToggleLike}
-              className={`btn px-4 py-2 rounded-full flex items-center gap-2 transition-colors ${
+              className={`flex items-center gap-2 rounded-full px-4 py-2 font-semibold transition-colors ${
                 project.likes && project.likes.includes(user._id)
-                  ? 'bg-danger text-white hover:bg-red-700'
-                  : 'bg-light-background text-text-secondary hover:bg-gray-300'
+                  ? "bg-red-500 text-white hover:bg-red-700"
+                  : "bg-gray-200 text-gray-600 hover:bg-gray-300"
               }`}
             >
-              <FiHeart className="w-5 h-5" /> {project.likes?.length || 0}
+              <FiHeart className="h-5 w-5" /> {project.likes?.length || 0}
             </button>
-            <span className="flex items-center gap-2 text-text-secondary">
-              <FiMessageSquare className="w-5 h-5" /> {project.comments?.length || 0}
+            <span className="flex items-center gap-2 text-gray-600">
+              <FiMessageSquare className="h-5 w-5" />{" "}
+              {project.comments?.length || 0}
             </span>
           </div>
         </div>
 
         {/* Project Description */}
         <div className="mb-6">
-          <h2 className="text-2xl font-semibold text-text-primary mb-3">Description</h2>
-          <p className="text-text-secondary whitespace-pre-wrap">{project.description}</p>
+          <h2 className="mb-3 text-2xl font-semibold text-gray-900">
+            Description
+          </h2>
+          <p className="whitespace-pre-wrap text-gray-600">
+            {project.description}
+          </p>
         </div>
 
         {/* Technologies */}
         {project.technologies && project.technologies.length > 0 && (
           <div className="mb-6">
-            <h2 className="text-2xl font-semibold text-text-primary mb-3">Technologies Used</h2>
+            <h2 className="mb-3 text-2xl font-semibold text-gray-900">
+              Technologies Used
+            </h2>
             <div className="flex flex-wrap gap-3">
               {project.technologies.map((tech, index) => (
                 <span
                   key={index}
-                  className="bg-accent-teal/10 text-accent-teal text-base px-4 py-2 rounded-full font-medium"
+                  className="rounded-full bg-blue-100 px-4 py-2 text-base font-medium text-blue-600"
                 >
                   {tech}
                 </span>
@@ -158,7 +172,7 @@ function ProjectView({ user }) {
         {/* Links */}
         {project.links && project.links.length > 0 && (
           <div className="mb-6">
-            <h2 className="text-2xl font-semibold text-text-primary mb-3">Links</h2>
+            <h2 className="mb-3 text-2xl font-semibold text-gray-900">Links</h2>
             <div className="flex flex-col gap-2">
               {project.links.map((link, index) => (
                 <a
@@ -166,9 +180,13 @@ function ProjectView({ user }) {
                   href={link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-primary hover:text-primary-dark flex items-center gap-2 text-lg font-medium underline-offset-2 hover:underline"
+                  className="flex items-center gap-2 text-lg font-medium text-blue-600 hover:underline"
                 >
-                  {link.includes('github.com') ? <FiGithub className="w-5 h-5" /> : <FiExternalLink className="w-5 h-5" />}
+                  {link.includes("github.com") ? (
+                    <FiGithub className="h-5 w-5" />
+                  ) : (
+                    <FiExternalLink className="h-5 w-5" />
+                  )}
                   {link}
                 </a>
               ))}
@@ -177,11 +195,13 @@ function ProjectView({ user }) {
         )}
 
         {/* Comments Section */}
-        <div className="mt-8 border-t pt-8 border-light-background">
-          <h2 className="text-2xl font-semibold text-text-primary mb-4">Comments</h2>
+        <div className="mt-8 border-t pt-8">
+          <h2 className="mb-4 text-2xl font-semibold text-gray-900">
+            Comments
+          </h2>
 
           {error && (
-            <div className="text-danger text-sm bg-danger/10 p-3 rounded-lg border border-danger mb-4">
+            <div className="mb-4 rounded-lg border border-red-500 bg-red-100 p-3 text-sm text-red-600">
               {error}
             </div>
           )}
@@ -192,16 +212,16 @@ function ProjectView({ user }) {
               type="text"
               value={newCommentText}
               onChange={(e) => setNewCommentText(e.target.value)}
-              className="form-input flex-grow"
+              className="flex-grow rounded border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               placeholder="Add a comment..."
               required
             />
             <button
               type="submit"
-              className="btn btn-primary px-6 py-3"
+              className="rounded bg-blue-600 px-6 py-2 font-semibold text-white hover:bg-blue-700"
               disabled={commentLoading}
             >
-              {commentLoading ? 'Posting...' : 'Post'}
+              {commentLoading ? "Posting..." : "Post"}
             </button>
           </form>
 
@@ -209,28 +229,32 @@ function ProjectView({ user }) {
           {project.comments && project.comments.length > 0 ? (
             <div className="space-y-4">
               {project.comments.map((comment) => (
-                <div key={comment._id} className="bg-light-background p-4 rounded-lg shadow-sm">
-                  <p className="text-text-primary text-base mb-1">{comment.text}</p>
-                  <p className="text-text-secondary text-xs">
-                    by{' '}
-                    {/* Defensive check for comment.user */}
+                <div
+                  key={comment._id}
+                  className="rounded-lg bg-gray-100 p-4 shadow-sm"
+                >
+                  <p className="mb-1 text-base text-gray-900">{comment.text}</p>
+                  <p className="text-xs text-gray-600">
+                    by{" "}
                     {comment.user ? (
                       <button
                         onClick={() => openProfileModal(comment.user._id)}
-                        className="text-primary hover:text-primary-dark font-medium"
+                        className="font-medium text-blue-600 hover:underline"
                       >
-                        {comment.user.username} {/* Line 112 is here */}
+                        {comment.user.username}
                       </button>
                     ) : (
-                      <span className="text-text-light">Unknown User</span>
-                    )}{' '}
+                      <span className="text-gray-500">Unknown User</span>
+                    )}{" "}
                     on {new Date(comment.createdAt).toLocaleDateString()}
                   </p>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-text-secondary">No comments yet. Be the first to leave feedback!</p>
+            <p className="text-gray-600">
+              No comments yet. Be the first to leave feedback!
+            </p>
           )}
         </div>
       </div>

@@ -1,16 +1,15 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
-} from 'react-router-dom';
-import Home from './pages/Home';
-import Dashboard from './pages/Dashboard';
-import ProjectView from './pages/ProjectView';
-import Navbar from './components/Navbar';
-import { authApi } from './utils/api';
+} from "react-router-dom";
+import Home from "./pages/Home";
+import Dashboard from "./pages/Dashboard";
+import ProjectView from "./pages/ProjectView";
+import Navbar from "./components/Navbar";
+import { authApi } from "./utils/api";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -18,19 +17,19 @@ function App() {
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (token) {
         try {
           const response = await authApi.getMe();
           if (response.status === 200) {
             setUser(response.data.user);
           } else {
-            localStorage.removeItem('token');
+            localStorage.removeItem("token");
             setUser(null);
           }
         } catch (error) {
-          console.error('Error fetching current user:', error);
-          localStorage.removeItem('token');
+          console.error("Error fetching current user:", error);
+          localStorage.removeItem("token");
           setUser(null);
         }
       }
@@ -45,24 +44,29 @@ function App() {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
     setUser(null);
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-cyan-500"></div>
+      <div className="flex h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
       </div>
     );
   }
 
   return (
     <Router>
-      <div className="min-h-screen flex flex-col bg-gray-100 text-gray-900">
-        {user && <Navbar user={user} onLogout={logout} />}
-
-        <main className="flex-grow">
+      <div className="min-h-screen bg-gray-50 text-gray-900">
+        {user && (
+          <Navbar
+            user={user}
+            onLogout={logout}
+            className="bg-white shadow-md"
+          />
+        )}
+        <main className="container mx-auto px-4 py-6">
           <Routes>
             <Route
               path="/"
@@ -76,13 +80,20 @@ function App() {
             />
             <Route
               path="/dashboard"
-              element={user ? <Dashboard user={user} /> : <Navigate to="/" replace />}
+              element={
+                user ? <Dashboard user={user} /> : <Navigate to="/" replace />
+              }
             />
             <Route
               path="/project/:id"
-              element={user ? <ProjectView user={user} /> : <Navigate to="/" replace />}
+              element={
+                user ? <ProjectView user={user} /> : <Navigate to="/" replace />
+              }
             />
-            <Route path="*" element={<Navigate to={user ? "/dashboard" : "/"} replace />} />
+            <Route
+              path="*"
+              element={<Navigate to={user ? "/dashboard" : "/"} replace />}
+            />
           </Routes>
         </main>
       </div>

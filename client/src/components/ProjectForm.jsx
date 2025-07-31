@@ -1,25 +1,25 @@
 // client/src/components/ProjectForm.jsx
-import React, { useState } from 'react';
-import { FiX, FiPlusCircle } from 'react-icons/fi'; 
-import { projectApi } from '../utils/api'; 
+import React, { useState } from "react";
+import { FiX, FiPlusCircle } from "react-icons/fi";
+import { projectApi } from "../utils/api";
 
 function ProjectForm({ onClose, onProjectAdded }) {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    links: [''], 
-    technologies: '' 
+    title: "",
+    description: "",
+    links: [""],
+    technologies: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
-    setError('');
+    setError("");
   };
 
   const handleLinkChange = (index, value) => {
@@ -29,7 +29,7 @@ function ProjectForm({ onClose, onProjectAdded }) {
   };
 
   const addLinkField = () => {
-    setFormData({ ...formData, links: [...formData.links, ''] });
+    setFormData({ ...formData, links: [...formData.links, ""] });
   };
 
   const removeLinkField = (index) => {
@@ -37,34 +37,35 @@ function ProjectForm({ onClose, onProjectAdded }) {
     setFormData({ ...formData, links: newLinks });
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       const technologiesArray = formData.technologies
-        .split(',')
-        .map(tech => tech.trim())
-        .filter(tech => tech);
+        .split(",")
+        .map((tech) => tech.trim())
+        .filter((tech) => tech);
 
       const projectData = {
         title: formData.title,
         description: formData.description,
-        links: formData.links.filter(link => link.trim() !== ''), // Filter out empty links
+        links: formData.links.filter((link) => link.trim() !== ""), // Filter out empty links
         technologies: technologiesArray,
       };
 
       const response = await projectApi.createProject(projectData);
 
-      if (response.status === 200 || response.status === 201) { // Assuming 200 or 201 for success
+      if (response.status === 200 || response.status === 201) {
+        // Assuming 200 or 201 for success
         onProjectAdded(response.data); // Pass the created project data
       } else {
-        setError(response.data.message || 'Failed to create project');
+        setError(response.data.message || "Failed to create project");
       }
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Network error. Please try again.';
+      const errorMessage =
+        err.response?.data?.message || "Network error. Please try again.";
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -72,17 +73,19 @@ function ProjectForm({ onClose, onProjectAdded }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-dark-primary bg-opacity-70 flex items-center justify-center p-4 z-50">
-      <div className="card max-w-2xl w-full max-h-[90vh] overflow-y-auto bg-background-DEFAULT">
+    <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black p-4">
+      <div className="w-full max-w-2xl rounded-lg bg-white p-6 shadow-lg">
         <div className="p-8">
           {/* Header */}
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-3xl font-bold text-text-primary">Add New Project</h2>
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="text-3xl font-bold text-gray-900">
+              Add New Project
+            </h2>
             <button
               onClick={onClose}
-              className="text-text-secondary hover:text-primary transition-colors"
+              className="text-gray-600 transition-colors hover:text-blue-600"
             >
-              <FiX className="w-8 h-8" />
+              <FiX className="h-8 w-8" />
             </button>
           </div>
 
@@ -90,7 +93,10 @@ function ProjectForm({ onClose, onProjectAdded }) {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title */}
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-text-primary mb-2">
+              <label
+                htmlFor="title"
+                className="mb-2 block text-sm font-medium text-gray-900"
+              >
                 Project Title *
               </label>
               <input
@@ -99,7 +105,7 @@ function ProjectForm({ onClose, onProjectAdded }) {
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
-                className="form-input"
+                className="w-full rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 placeholder="My Awesome Project"
                 required
               />
@@ -107,7 +113,10 @@ function ProjectForm({ onClose, onProjectAdded }) {
 
             {/* Description */}
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-text-primary mb-2">
+              <label
+                htmlFor="description"
+                className="mb-2 block text-sm font-medium text-gray-900"
+              >
                 Description *
               </label>
               <textarea
@@ -116,7 +125,7 @@ function ProjectForm({ onClose, onProjectAdded }) {
                 value={formData.description}
                 onChange={handleChange}
                 rows={5}
-                className="form-input resize-none"
+                className="w-full resize-none rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 placeholder="Describe your project, what it does, and what technologies you used..."
                 required
               ></textarea>
@@ -124,7 +133,10 @@ function ProjectForm({ onClose, onProjectAdded }) {
 
             {/* Technologies */}
             <div>
-              <label htmlFor="technologies" className="block text-sm font-medium text-text-primary mb-2">
+              <label
+                htmlFor="technologies"
+                className="mb-2 block text-sm font-medium text-gray-900"
+              >
                 Technologies (comma separated)
               </label>
               <input
@@ -133,48 +145,50 @@ function ProjectForm({ onClose, onProjectAdded }) {
                 name="technologies"
                 value={formData.technologies}
                 onChange={handleChange}
-                className="form-input"
+                className="w-full rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 placeholder="React, Node.js, MongoDB, Tailwind CSS"
               />
-              <p className="text-xs text-text-light mt-1">Separate technologies with commas (e.g., React, Node.js)</p>
+              <p className="mt-1 text-xs text-gray-500">
+                Separate technologies with commas (e.g., React, Node.js)
+              </p>
             </div>
 
             {/* Links */}
             <div>
-              <label className="block text-sm font-medium text-text-primary mb-2">
+              <label className="mb-2 block text-sm font-medium text-gray-900">
                 Relevant Links
               </label>
               {formData.links.map((link, index) => (
-                <div key={index} className="flex items-center gap-2 mb-2">
+                <div key={index} className="mb-2 flex items-center gap-2">
                   <input
                     type="url"
                     value={link}
                     onChange={(e) => handleLinkChange(index, e.target.value)}
-                    className="form-input flex-grow"
+                    className="flex-grow rounded border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     placeholder={`Link ${index + 1} (e.g., GitHub, Live Demo)`}
                   />
                   <button
                     type="button"
                     onClick={() => removeLinkField(index)}
-                    className="text-danger hover:text-red-700 transition-colors"
+                    className="text-red-600 transition-colors hover:text-red-800"
                     title="Remove link"
                   >
-                    <FiX className="w-6 h-6" />
+                    <FiX className="h-6 w-6" />
                   </button>
                 </div>
               ))}
               <button
                 type="button"
                 onClick={addLinkField}
-                className="btn bg-light-background text-text-secondary hover:bg-gray-300 text-sm px-4 py-2 mt-2"
+                className="mt-2 flex items-center gap-2 rounded bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-300"
               >
-                <FiPlusCircle className="w-4 h-4" /> Add Another Link
+                <FiPlusCircle className="h-4 w-4" /> Add Another Link
               </button>
             </div>
 
             {/* Error */}
             {error && (
-              <div className="text-danger text-sm bg-danger/10 p-3 rounded-lg border border-danger">
+              <div className="rounded-lg border border-red-500 bg-red-100 p-3 text-sm text-red-600">
                 {error}
               </div>
             )}
@@ -184,16 +198,16 @@ function ProjectForm({ onClose, onProjectAdded }) {
               <button
                 type="button"
                 onClick={onClose}
-                className="btn bg-light-background text-text-primary hover:bg-gray-300 flex-1"
+                className="flex-1 rounded bg-gray-200 px-4 py-2 font-semibold text-gray-700 hover:bg-gray-300"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="btn btn-primary flex-1"
+                className="flex-1 rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700 disabled:bg-blue-300"
               >
-                {loading ? 'Creating Project...' : 'Create Project'}
+                {loading ? "Creating Project..." : "Create Project"}
               </button>
             </div>
           </form>
