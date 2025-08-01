@@ -316,7 +316,7 @@ Remember to update your `VITE_API_BASE_URL` in the client's `.env` and `MONGO_UR
 ## Live Demo
 
 - **Frontend**: [Deployed on Render](https://devconnect-frontend-onxf.onrender.com)
-- **Backend**: [Deployed on Render](https://devconnect-backend-akfq.onrender.com)
+- **Backend**: [Deployed on Render](https://devconnect-backend-akfq.onrender.com/api/test)
 
 ## Contributing
 
