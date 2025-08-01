@@ -313,6 +313,15 @@ This application can be deployed using various free tier services:
 
 Remember to update your `VITE_API_BASE_URL` in the client's `.env` and `MONGO_URI` in the server's `.env` to point to your deployed backend and MongoDB Atlas cluster respectively.
 
+## Live Demo
+
+- **Frontend**: [Deployed on Render](https://devconnect-frontend-onxf.onrender.com)
+- **Backend**: [Deployed on Render](https://devconnect-backend-akfq.onrender.com)
+
+## Contributing
+
+This project was created as part of a full-stack developer assignment. Feel free to fork this repository and contribute!
+
 
 ## Author
 
